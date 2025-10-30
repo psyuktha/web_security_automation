@@ -6,6 +6,9 @@ from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
 from zapv2 import ZAPv2
 from colorama import init, Fore, Style
+from typing import List, Dict
+import subprocess
+import shlex
 
 # Initialize colorama for cross-platform colored output
 init()
@@ -243,6 +246,105 @@ class SecurityScanner:
         self.analyze_structure()
         
         self.logger.info(f"{Fore.GREEN}Scan completed successfully{Style.RESET_ALL}")
+def save_report_to_file(content: str, filename: str):
+    """
+    Save a report to a file.
+    
+    Args:
+        content (str): The content of the report
+        filename (str): The filename to save the report to
+    """
+    try:
+        with open(f'/Users/yuktha/Documents/VulneraX/agent/reports/{filename}', 'w') as file:
+            file.write(content)
+        print(f"Report saved successfully to {filename}")
+        return {"success": True, "message": f"Report saved to {filename}"}
+    except Exception as e:
+        print(f"Error saving report: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+def execute(curl: List[str]) -> List[Dict]:
+    """
+    Execute a list of curl commands and return the results.
+
+    Args:
+        curl (List[str]): List of curl commands to execute.
+
+    Returns:
+        List[Dict]: List of results per curl command. Each result contains:
+            - success (bool)
+            - output (str, if success)
+            - error (str, if failed)
+            - status_code (int)
+    """
+    results = []
+
+    for curl_command in curl:
+        print(f"Executing command: {curl_command}")
+
+        if not curl_command or not curl_command.strip().startswith("curl"):
+            results.append({
+                "success": False,
+                "error": "Invalid curl command. Command must start with 'curl'.",
+                "status_code": -1
+            })
+            continue
+
+        try:
+            args = shlex.split(curl_command)
+            result = subprocess.run(
+                args,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+
+            if result.returncode == 0:
+                results.append({
+                    "success": True,
+                    "output": result.stdout.strip(),
+                    "status_code": 0
+                })
+            else:
+                results.append({
+                    "success": False,
+                    "error": result.stderr.strip(),
+                    "status_code": result.returncode
+                })
+        except subprocess.TimeoutExpired:
+            results.append({
+                "success": False,
+                "error": "Command execution timed out after 30 seconds",
+                "status_code": -1
+            })
+
+        except Exception as e:
+            results.append({
+                "success": False,
+                "error": f"Error executing curl command: {str(e)}",
+                "status_code": -1
+            })
+
+    return results
+
+def run_security_scan(target_url: str) -> Dict:
+    print(f"--- Tool: run_security_scan called with input: {target_url} ---")
+    # Extract the URL safely
+    if not target_url:
+        return {"error": "No target_url provided."}
+    print(f"--- Tool: run_security_scan called for target URL: {target_url} ---")
+    scanner=SecurityScanner(target_url)
+    # detailed_endpoints = scanner.run_scan()
+    with open('structure.json', 'r') as file:
+        data = json.load(file)
+
+    
+    print("AGENTTTTT_______________________________")
+    print(data)
+    return {
+        "message": f"Scan completed for {target_url}",
+        "endpoints": data
+    }
 
 def main():
     # Example usage
