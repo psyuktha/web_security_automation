@@ -22,6 +22,17 @@ playground:
 	@echo "==============================================================================="
 	uv run adk web . --port 8501 --reload_agents
 
+# Launch local dev playground for fuzzing engine
+playground-fuzzing:
+	@echo "==============================================================================="
+	@echo "| 🚀 Starting fuzzing engine playground...                                    |"
+	@echo "|                                                                             |"
+	@echo "| 💡 Try providing endpoint information to start fuzzing                     |"
+	@echo "|                                                                             |"
+	@echo "| 🔍 IMPORTANT: Select the 'fuzzing_engine' folder to interact with your agent. |"
+	@echo "==============================================================================="
+	uv run adk web . --port 8501 --reload_agents
+
 # ==============================================================================
 # Backend Deployment Targets
 # ==============================================================================
@@ -32,6 +43,13 @@ deploy:
 	(uv export --no-hashes --no-header --no-dev --no-emit-project --no-annotate > .requirements.txt 2>/dev/null || \
 	uv export --no-hashes --no-header --no-dev --no-emit-project > .requirements.txt) && \
 	uv run -m adk_agents.agent_engine_app
+
+# Deploy the fuzzing engine remotely
+deploy-fuzzing:
+	# Export dependencies to requirements file using uv export.
+	(uv export --no-hashes --no-header --no-dev --no-emit-project --no-annotate > .requirements.txt 2>/dev/null || \
+	uv export --no-hashes --no-header --no-dev --no-emit-project > .requirements.txt) && \
+	uv run -m fuzzing_engine.fuzzing_engine_app
 
 # Alias for 'make deploy' for backward compatibility
 backend: deploy
@@ -45,6 +63,17 @@ backend: deploy
 setup-dev-env:
 	PROJECT_ID=$$(gcloud config get-value project) && \
 	(cd deployment/terraform/dev && terraform init && terraform apply --var-file vars/env.tfvars --var dev_project_id=$$PROJECT_ID --auto-approve)
+
+# ==============================================================================
+# Model Information
+# ==============================================================================
+
+# List available Google AI models
+list-models:
+	@echo "==============================================================================="
+	@echo "| 📋 Listing available Google AI models...                                    |"
+	@echo "==============================================================================="
+	uv run python list_models_simple.py
 
 # ==============================================================================
 # Testing & Code Quality

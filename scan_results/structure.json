@@ -1,0 +1,224 @@
+{
+    "forms": [
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "id": "tsw4kcog080404k0s8k0wg0g",
+                    "required": true
+                },
+                {
+                    "name": "password",
+                    "type": "password",
+                    "id": "xgo44osowwscokskw808wcs0",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "id": "cg80g8gcwggkowg0g4wog0og",
+                    "required": true
+                },
+                {
+                    "name": "password",
+                    "type": "password",
+                    "id": "l4804kg444s4ggsscs00sg40",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "action": "/forgot-password",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "id": "tkwog4g4oo4kwwogwkccwgks",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "id": "bggks4wckc04o4s0kgg0g8oc",
+                    "required": true
+                },
+                {
+                    "name": "password",
+                    "type": "password",
+                    "id": "hwwsskwcgkook88ook804ow4",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "action": "/register",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "name",
+                    "type": "text",
+                    "id": "name-ess8wgcwws080cscc04ggsgw",
+                    "required": true
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "id": "email-v8wwk80cww8ws4w0w0kkg0ww",
+                    "required": true
+                },
+                {
+                    "name": "password",
+                    "type": "password",
+                    "id": "password-zwco0884gwso0s0c8ggsokcw",
+                    "required": true
+                },
+                {
+                    "name": "password_confirmation",
+                    "type": "password",
+                    "id": "password_confirmation-bw4o0oogsc0ksg4o800kwko8",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                },
+                {
+                    "name": "password",
+                    "type": "password"
+                }
+            ]
+        },
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                },
+                {
+                    "name": "password",
+                    "type": "password"
+                }
+            ]
+        },
+        {
+            "action": "/forgot-password",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                }
+            ]
+        },
+        {
+            "action": "/register",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden"
+                },
+                {
+                    "name": "name",
+                    "type": "text"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                },
+                {
+                    "name": "password",
+                    "type": "password"
+                },
+                {
+                    "name": "password_confirmation",
+                    "type": "password"
+                }
+            ]
+        },
+        {
+            "action": "/login",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "hidden"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                },
+                {
+                    "name": "password",
+                    "type": "password"
+                }
+            ]
+        }
+    ]
+}
