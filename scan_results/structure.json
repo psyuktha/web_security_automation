@@ -1,222 +1,1422 @@
 {
     "forms": [
         {
-            "action": "/login",
-            "method": "POST",
+            "action": "search.php?test=query",
+            "method": "post",
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "hidden",
-                    "id": "",
-                    "required": false
-                },
-                {
-                    "name": "email",
-                    "type": "email",
-                    "id": "tsw4kcog080404k0s8k0wg0g",
-                    "required": true
-                },
-                {
-                    "name": "password",
-                    "type": "password",
-                    "id": "xgo44osowwscokskw808wcs0",
-                    "required": true
-                }
-            ]
-        },
-        {
-            "action": "/login",
-            "method": "POST",
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "hidden",
-                    "id": "",
-                    "required": false
-                },
-                {
-                    "name": "email",
-                    "type": "email",
-                    "id": "cg80g8gcwggkowg0g4wog0og",
-                    "required": true
-                },
-                {
-                    "name": "password",
-                    "type": "password",
-                    "id": "l4804kg444s4ggsscs00sg40",
-                    "required": true
-                }
-            ]
-        },
-        {
-            "action": "/forgot-password",
-            "method": "POST",
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "hidden",
-                    "id": "",
-                    "required": false
-                },
-                {
-                    "name": "email",
-                    "type": "email",
-                    "id": "tkwog4g4oo4kwwogwkccwgks",
-                    "required": true
-                }
-            ]
-        },
-        {
-            "action": "/login",
-            "method": "POST",
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "hidden",
-                    "id": "",
-                    "required": false
-                },
-                {
-                    "name": "email",
-                    "type": "email",
-                    "id": "bggks4wckc04o4s0kgg0g8oc",
-                    "required": true
-                },
-                {
-                    "name": "password",
-                    "type": "password",
-                    "id": "hwwsskwcgkook88ook804ow4",
-                    "required": true
-                }
-            ]
-        },
-        {
-            "action": "/register",
-            "method": "POST",
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "hidden",
-                    "id": "",
-                    "required": false
-                },
-                {
-                    "name": "name",
+                    "name": "searchFor",
                     "type": "text",
-                    "id": "name-ess8wgcwws080cscc04ggsgw",
-                    "required": true
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "email",
-                    "type": "email",
-                    "id": "email-v8wwk80cww8ws4w0w0kkg0ww",
-                    "required": true
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "/secured/newuser.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uuname",
+                    "type": "text",
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "password",
+                    "name": "upass",
                     "type": "password",
-                    "id": "password-zwco0884gwso0s0c8ggsokcw",
-                    "required": true
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "password_confirmation",
+                    "name": "upass2",
                     "type": "password",
-                    "id": "password_confirmation-bw4o0oogsc0ksg4o800kwko8",
-                    "required": true
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "urname",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "ucc",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "uemail",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "uphone",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "signup",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
                 }
             ]
         },
         {
-            "action": "/login",
-            "method": "POST",
+            "action": "search.php?test=query",
+            "method": "post",
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "hidden"
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "email",
-                    "type": "email"
-                },
-                {
-                    "name": "password",
-                    "type": "password"
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
                 }
             ]
         },
         {
-            "action": "/login",
+            "action": "cart.php",
             "method": "POST",
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "hidden"
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "email",
-                    "type": "email"
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "password",
-                    "type": "password"
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
                 }
             ]
         },
         {
-            "action": "/forgot-password",
-            "method": "POST",
+            "action": "search.php?test=query",
+            "method": "post",
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "hidden"
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
                 },
                 {
-                    "name": "email",
-                    "type": "email"
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
                 }
             ]
         },
         {
-            "action": "/register",
+            "action": "cart.php",
             "method": "POST",
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "hidden"
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
                 },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "userinfo.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uname",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "pass",
+                    "type": "password",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "params.php?p=valid&pp=12",
+            "method": "get",
+            "inputs": [
+                {
+                    "name": "aaaa/",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "",
+            "method": "post",
+            "inputs": [
                 {
                     "name": "name",
+                    "type": "hidden",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "submit",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "userinfo.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uname",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "pass",
+                    "type": "password",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text",
+                    "id": "",
+                    "required": false
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit",
+                    "id": "",
+                    "required": false
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
                     "type": "text"
                 },
                 {
-                    "name": "email",
-                    "type": "email"
-                },
-                {
-                    "name": "password",
-                    "type": "password"
-                },
-                {
-                    "name": "password_confirmation",
-                    "type": "password"
+                    "name": "goButton",
+                    "type": "submit"
                 }
             ]
         },
         {
-            "action": "/login",
-            "method": "POST",
+            "action": "params.php?p=valid&pp=12",
+            "method": "get",
             "inputs": [
                 {
-                    "name": "_token",
+                    "name": "aaaa/",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "userinfo.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uname",
+                    "type": "text"
+                },
+                {
+                    "name": "pass",
+                    "type": "password"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "name",
                     "type": "hidden"
                 },
                 {
-                    "name": "email",
-                    "type": "email"
+                    "name": "submit",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
                 },
                 {
-                    "name": "password",
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "cart.php",
+            "method": "POST",
+            "inputs": [
+                {
+                    "name": "price",
+                    "type": "hidden"
+                },
+                {
+                    "name": "addcart",
+                    "type": "hidden"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "userinfo.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uname",
+                    "type": "text"
+                },
+                {
+                    "name": "pass",
                     "type": "password"
+                },
+                {
+                    "name": "",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "/secured/newuser.php",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "uuname",
+                    "type": "text"
+                },
+                {
+                    "name": "upass",
+                    "type": "password"
+                },
+                {
+                    "name": "upass2",
+                    "type": "password"
+                },
+                {
+                    "name": "urname",
+                    "type": "text"
+                },
+                {
+                    "name": "ucc",
+                    "type": "text"
+                },
+                {
+                    "name": "uemail",
+                    "type": "text"
+                },
+                {
+                    "name": "uphone",
+                    "type": "text"
+                },
+                {
+                    "name": "signup",
+                    "type": "submit"
+                }
+            ]
+        },
+        {
+            "action": "search.php?test=query",
+            "method": "post",
+            "inputs": [
+                {
+                    "name": "searchFor",
+                    "type": "text"
+                },
+                {
+                    "name": "goButton",
+                    "type": "submit"
                 }
             ]
         }

