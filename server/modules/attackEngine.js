@@ -344,6 +344,7 @@
   
 //   return results;
 // };
+// 
 import axios from "axios";
 
 // ── BASELINE ──────────────────────────────────────────────────────────────────
@@ -355,7 +356,6 @@ export const getBaseline = async (endpoint) => {
 
     if (method === "GET") {
       const testUrl = new URL(endpoint.url);
-      // Use original param values for baseline
       for (const [key, value] of Object.entries(endpoint.urlParams || {})) {
         testUrl.searchParams.set(key, value);
       }
@@ -389,15 +389,48 @@ export const getBaseline = async (endpoint) => {
 // ── EVIDENCE EXTRACTOR ────────────────────────────────────────────────────────
 const extractEvidence = (response, payload) => {
   const responseText = JSON.stringify(response.data || "");
-
-  // Try to extract SQL error message
   const errorMatch = responseText.match(/(sql|mysql|postgresql|oracle|database).*?error[^"]{0,200}/i);
-  if (errorMatch) {
-    return errorMatch[0].substring(0, 300);
+  if (errorMatch) return errorMatch[0].substring(0, 300);
+  return responseText.substring(0, 500);
+};
+
+// ── DEDUPLICATE ENDPOINTS ─────────────────────────────────────────────────────
+// Collapses duplicate endpoints that share the same path+method but differ only
+// in param values (e.g. /users/search?q=admin and /users/search?q=alice → one entry)
+export const deduplicateEndpoints = (endpoints) => {
+  const seen = new Map();
+
+  for (const ep of endpoints) {
+    const url = new URL(ep.url);
+    // Key = method + pathname only (ignore param values)
+    const key = `${ep.method.toUpperCase()}:${url.pathname}`;
+
+    if (!seen.has(key)) {
+      // First time seeing this path — keep it, normalize param values to generic placeholders
+      const normalized = { ...ep };
+
+      if (ep.urlParams) {
+        const normalizedParams = {};
+        for (const [k] of Object.entries(ep.urlParams)) {
+          // Reset to a safe neutral value for baseline; attack will inject into each
+          normalizedParams[k] = "1";
+        }
+        normalized.urlParams = normalizedParams;
+
+        // Also reset the URL to use normalized params
+        const cleanUrl = new URL(ep.url);
+        for (const [k, v] of Object.entries(normalizedParams)) {
+          cleanUrl.searchParams.set(k, v);
+        }
+        normalized.url = cleanUrl.toString();
+      }
+
+      seen.set(key, normalized);
+    }
+    // If already seen — skip, it's a duplicate path
   }
 
-  // Return full response snippet (not truncated like responseBody)
-  return responseText.substring(0, 500);
+  return Array.from(seen.values());
 };
 
 // ── VULNERABILITY CLASSIFIER ──────────────────────────────────────────────────
@@ -458,10 +491,12 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
         evidence: `Response took ${attackData.responseTime}ms — expected delay: ${expectedDelay}ms`,
       };
     }
+
+    // Time-based payload but no delay detected — not vulnerable via this method
+    return { vulnerable: false, type: null, confidence: null, evidence: "" };
   }
 
   // ── 3. AUTH BYPASS ──────────────────────────────────────────────────────────
-  // Baseline was 401, now 200 after injection
   if (baseline?.statusCode === 401 && statusCode === 200) {
     return {
       vulnerable: true,
@@ -472,7 +507,6 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
   }
 
   // ── 4. ERROR CODE CHANGE ────────────────────────────────────────────────────
-  // Was 200, now 500 — injection triggered a server crash
   if (baseline?.statusCode === 200 && statusCode === 500) {
     return {
       vulnerable: true,
@@ -495,7 +529,7 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
       /or\s+['"]?1['"]?\s*=\s*['"]?2/i.test(payload) ||
       /or\s+1=2/i.test(payload);
 
-    // Check if response is empty — parameterized query safely rejected the payload
+    // Check if response data is empty
     const currentData = response.data;
     const isEmpty =
       !currentData ||
@@ -505,17 +539,25 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
           Array.isArray(v) ? v.length === 0 : !v
         ));
 
+    // ── FIX: Parameterized endpoints return empty on injection → not vulnerable ──
+    // Also guard: if baseline itself was small/empty, a tiny diff isn't meaningful
     if (isTrueCondition && isEmpty) {
-      // Parameterized query — not vulnerable
       return { vulnerable: false, type: null, confidence: null, evidence: "" };
     }
 
-    if (isTrueCondition && lengthRatio > 0.3 && currentLength > baselineLength) {
+    // ── FIX: Require both a meaningful ratio AND the current response to be
+    // substantially larger — guards against noise on small baseline responses ──
+    if (
+      isTrueCondition &&
+      lengthRatio > 0.3 &&
+      currentLength > baselineLength &&
+      currentLength > baselineLength + 50 // at least 50 extra bytes, not just noise
+    ) {
       return {
         vulnerable: true,
         type: "boolean-based",
         confidence: "medium",
-        evidence: `Response grew by ${Math.round(lengthRatio * 100)}% with true condition payload — baseline: ${baselineLength} bytes, attack: ${currentLength} bytes`,
+        evidence: `Response grew by ${Math.round(lengthRatio * 100)}% with true condition — baseline: ${baselineLength}B, attack: ${currentLength}B`,
       };
     }
 
@@ -530,15 +572,18 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
   }
 
   // ── 6. UNION-BASED ──────────────────────────────────────────────────────────
+  // Only flag if UNION payload AND response is meaningfully larger than baseline
   if (/union\s+select/i.test(payload) && baseline?.responseBody) {
     const currentLength = JSON.stringify(response.data || "").length;
     const baselineLength = baseline.responseBody.length;
 
-    if (currentLength > baselineLength * 1.5) {
+    // ── FIX: UNION SELECT NULL payloads that return errors should not be flagged
+    // here — they'll be caught by error-based above. Only flag actual data growth. ──
+    if (currentLength > baselineLength * 1.5 && currentLength > baselineLength + 100) {
       return {
         vulnerable: true,
         type: "union-based",
-        confidence: "medium",
+        confidence: "high",
         evidence: `Response is ${Math.round(currentLength / baselineLength)}x larger than baseline — possible data exfiltration`,
       };
     }
@@ -572,7 +617,6 @@ export const performSQLInjectionAttack = async (endpoint, payload, baseline = nu
     if (method === "GET") {
       for (const [key] of Object.entries(endpoint.urlParams || {})) {
         const testUrl = new URL(url);
-        // Keep other params intact, inject only into current key
         for (const [k, v] of Object.entries(endpoint.urlParams)) {
           testUrl.searchParams.set(k, k === key ? payload : v);
         }
@@ -601,9 +645,7 @@ export const performSQLInjectionAttack = async (endpoint, payload, baseline = nu
         }
       }
     } else if (method === "POST") {
-      const testData = { ...endpoint.bodyParams };
-
-      for (const key of Object.keys(testData)) {
+      for (const key of Object.keys(endpoint.bodyParams || {})) {
         const injectedData = { ...endpoint.bodyParams, [key]: payload };
 
         try {
@@ -654,36 +696,50 @@ export const performSQLInjectionAttack = async (endpoint, payload, baseline = nu
 export const performAttacks = async (endpoints, payloads) => {
   const results = [];
 
-  console.log(`🚀 Starting attacks on ${endpoints.length} endpoints with ${payloads.length} payloads each...`);
+  // ── FIX: Deduplicate before attacking — collapses ?q=admin and ?q=alice into one ──
+  const uniqueEndpoints = deduplicateEndpoints(endpoints);
+  const skipped = endpoints.length - uniqueEndpoints.length;
+  if (skipped > 0) {
+    console.log(`🧹 Deduplicated ${skipped} duplicate endpoint(s) — attacking ${uniqueEndpoints.length} unique paths`);
+  }
 
-  for (const endpoint of endpoints) {
+  console.log(`🚀 Starting attacks on ${uniqueEndpoints.length} endpoints with ${payloads.length} payloads each...`);
+
+  for (const endpoint of uniqueEndpoints) {
     if (!endpoint.hasParams) {
       console.log(`⏭️  Skipping ${endpoint.url} — no parameters`);
       continue;
     }
 
-    console.log(`🎯 Attacking endpoint: ${endpoint.url}`);
+    console.log(`🎯 Attacking endpoint: ${endpoint.method} ${endpoint.url}`);
 
-    // Fetch baseline once per endpoint before any payloads
     const baseline = await getBaseline(endpoint);
     if (baseline) {
-      console.log(`📊 Baseline: status=${baseline.statusCode}, length=${baseline.responseBody.length} bytes`);
+      console.log(`📊 Baseline: status=${baseline.statusCode}, length=${baseline.responseBody.length}B, time=${baseline.responseTime}ms`);
     }
+
+    // Track unique vulnerabilities per endpoint (one finding per payload type, not per payload)
+    const foundTypes = new Set();
 
     for (const payload of payloads) {
       const result = await performSQLInjectionAttack(endpoint, payload, baseline);
 
       if (result.vulnerable) {
-        console.log(`✅ VULNERABILITY FOUND [${result.type}] [${result.confidence}]: ${endpoint.url} — payload: ${payload}`);
-        results.push(result);
+        // ── FIX: Deduplicate findings — don't report the same type 16 times ──
+        const dedupKey = `${result.type}`;
+        if (!foundTypes.has(dedupKey)) {
+          foundTypes.add(dedupKey);
+          console.log(`✅ VULNERABILITY FOUND [${result.type}] [${result.confidence}]: ${endpoint.url} — payload: ${payload}`);
+          results.push(result);
+        } else {
+          console.log(`⏭️  Skipping duplicate [${result.type}] finding for ${endpoint.url}`);
+        }
       }
 
-      // Small delay to avoid overwhelming the target
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
 
-  console.log(`✅ Attack phase completed. Found ${results.length} vulnerabilities.`);
-
+  console.log(`✅ Attack phase completed. Found ${results.length} unique vulnerabilities.`);
   return results;
 };
