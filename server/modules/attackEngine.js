@@ -517,7 +517,9 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
   }
 
   // ── 5. BOOLEAN-BASED ────────────────────────────────────────────────────────
-  if (baseline?.responseBody) {
+  // Only check on successful responses — a 500 means the payload caused an error,
+  // which is already caught by error-based above. Don't double-count it here.
+  if (baseline?.responseBody && statusCode !== 500) {
     const currentLength = JSON.stringify(response.data || "").length;
     const baselineLength = baseline.responseBody.length;
     const lengthRatio = Math.abs(currentLength - baselineLength) / (baselineLength || 1);
@@ -539,19 +541,18 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
           Array.isArray(v) ? v.length === 0 : !v
         ));
 
-    // ── FIX: Parameterized endpoints return empty on injection → not vulnerable ──
-    // Also guard: if baseline itself was small/empty, a tiny diff isn't meaningful
+    // Parameterized endpoints return empty on injection → not vulnerable
     if (isTrueCondition && isEmpty) {
       return { vulnerable: false, type: null, confidence: null, evidence: "" };
     }
 
-    // ── FIX: Require both a meaningful ratio AND the current response to be
-    // substantially larger — guards against noise on small baseline responses ──
+    // Require meaningful ratio + response must be substantially larger
+    // (guards against noise on small baseline responses)
     if (
       isTrueCondition &&
       lengthRatio > 0.3 &&
       currentLength > baselineLength &&
-      currentLength > baselineLength + 50 // at least 50 extra bytes, not just noise
+      currentLength > baselineLength + 50
     ) {
       return {
         vulnerable: true,
@@ -572,13 +573,13 @@ export const isSQLInjectionVulnerable = (response, payload, attackData = null, b
   }
 
   // ── 6. UNION-BASED ──────────────────────────────────────────────────────────
-  // Only flag if UNION payload AND response is meaningfully larger than baseline
-  if (/union\s+select/i.test(payload) && baseline?.responseBody) {
+  // Only flag on 200 responses with actual data growth — a 500 with a UNION error
+  // is already caught by error-based above. A column mismatch error being "larger"
+  // than a tiny baseline is not data exfiltration.
+  if (/union\s+select/i.test(payload) && baseline?.responseBody && statusCode === 200) {
     const currentLength = JSON.stringify(response.data || "").length;
     const baselineLength = baseline.responseBody.length;
 
-    // ── FIX: UNION SELECT NULL payloads that return errors should not be flagged
-    // here — they'll be caught by error-based above. Only flag actual data growth. ──
     if (currentLength > baselineLength * 1.5 && currentLength > baselineLength + 100) {
       return {
         vulnerable: true,
