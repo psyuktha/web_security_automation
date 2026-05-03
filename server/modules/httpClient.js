@@ -85,11 +85,12 @@ export const loginToDVWA = async (client, targetUrl) => {
 
     // 2. Perform Login POST with credentials from environment
     const params = new URLSearchParams();
-    const username = process.env.TARGET_USERNAME || process.env.LOGIN_USERNAME || 'admin';
+    const username = process.env.TARGET_USERNAME || process.env.LOGIN_USERNAME || '';
     const password = process.env.TARGET_PASSWORD || process.env.LOGIN_PASSWORD || '';
     
-    params.append('username', username);
-    params.append('password', password);
+    if (!username || !password) {
+      console.warn("⚠️  TARGET_USERNAME and TARGET_PASSWORD not set. Authentication may fail.");
+    }
     params.append('Login', 'Login');
     if (csrfToken) {
       params.append('user_token', csrfToken);

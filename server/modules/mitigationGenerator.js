@@ -37,10 +37,10 @@ export const generateMitigation = async (vuln) => {
   let model;
 
   try {
-    model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    model = genAI.getGenerativeModel({ model: "gemma-3-1b-it" });
   } catch (e) {
     try {
-      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      model = genAI.getGenerativeModel({ model: "gemma-3-1b-it" });
     } catch {
       return getFallbackMitigation(vuln.type);
     }

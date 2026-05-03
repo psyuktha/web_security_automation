@@ -476,34 +476,36 @@ export const runSecurityScan = async (targetUrl, attackTypes) => {
 /**
  * Infer likely body param names from endpoint URL path.
  * This is a fallback when the crawler doesn't populate bodyParams.
+ * Uses empty strings to avoid hardcoded test data.
  */
 const inferBodyParams = (url) => {
   const path = new URL(url).pathname.toLowerCase();
+  const genericParams = { input: "", value: "", data: "", query: "", search: "" };
 
   if (path.includes("login") || path.includes("auth") || path.includes("signin")) {
-    return { username: "admin", password: "password" };
+    return { username: "", password: "" };
   }
   if (path.includes("register") || path.includes("signup")) {
-    return { username: "test", password: "password", email: "test@test.com" };
+    return { username: "", password: "", email: "" };
   }
-  if (path.includes("search")) {
-    return { q: "test" };
+  if (path.includes("search") || path.includes("query")) {
+    return { q: "", search: "" };
   }
   if (path.includes("admin")) {
-    return { token: "test", query: "SELECT 1" };
+    return { token: "", query: "" };
   }
   if (path.includes("user")) {
-    return { user_id: "1", username: "test" };
+    return { user_id: "", username: "" };
   }
   if (path.includes("product")) {
-    return { id: "1" };
+    return { id: "" };
   }
   if (path.includes("order")) {
-    return { order_id: "1", user_id: "1" };
+    return { order_id: "", user_id: "" };
   }
 
-  // Generic fallback
-  return { id: "1", input: "test" };
+  // Generic fallback - empty values for actual payload injection
+  return genericParams;
 };
 
 /**

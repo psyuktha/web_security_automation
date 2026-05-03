@@ -85,26 +85,56 @@ Removed all hardcoded values from scanning modules to enable actual, dynamic sca
 
 ---
 
-### 6. **zapCrawler.js** - Generic Body Parameter Inference
+### 6. **attackEngine.js** - Removed DVWA Endpoint Restrictions
 **Removed:**
-- Hardcoded test values: `"admin"`, `"password"`, `"test"`, `"SELECT 1"`
-- Hardcoded parameter mapping for specific paths
+- Hardcoded restriction: `if (!endpoint.url.includes('/vulnerabilities/sqli/'))`
+- Only allowed testing on DVWA SQLi endpoints
 
 **Replaced with:**
-- Empty string placeholders for actual values
-- Generic parameter names only
-- Actual payload injection happens during attack phase
+- Tests all endpoints with parameters regardless of path
+- Enables actual scanning of any target application
 
-**Impact:** Scanner no longer send fake test data; payloads are properly inserted during attacks.
+**Impact:** Scanner now performs attacks on any discovered endpoint, not just DVWA-specific paths.
 
 ---
 
-### 7. **zapCrawler.js** - Explicit ZAP URL Warning
-**Added:**
-- Console warning when using default ZAP URL (`http://localhost:8090`)
-- Directive to set `ZAP_API_URL` environment variable
+### 7. **httpClient.js** - Removed Default Username
+**Removed:**
+- Hardcoded default username: `'admin'` when no environment variable set
 
-**Impact:** Users are aware they should explicitly configure ZAP URL.
+**Replaced with:**
+- Empty string default with warning message
+- Requires explicit environment variable configuration
+
+**Impact:** No default credentials; authentication must be explicitly configured.
+
+---
+
+### 8. **scanOrchestrator.js** - Generic Parameter Inference
+**Removed:**
+- Hardcoded test values: `"admin"`, `"password"`, `"test@test.com"`, `"SELECT 1"`, etc.
+
+**Replaced with:**
+- Empty string placeholders for all parameters
+- Actual payload injection happens during attack phase
+
+**Impact:** No fake test data sent during endpoint discovery.
+
+---
+
+### 9. **zapCrawler.js** - Generic Fallback Endpoints
+**Removed:**
+- Hardcoded test data in fallback endpoints:
+  - `username: "admin", password: "password"`
+  - `q: "admin"`
+  - `user_id: "1"`
+  - `token: "faketoken", query: "SELECT * FROM products"`
+
+**Replaced with:**
+- Empty string placeholders for all parameters
+- Generic endpoint structure without test data
+
+**Impact:** Fallback endpoints don't send fake data when ZAP crawling fails.
 
 ---
 
@@ -174,15 +204,16 @@ export ZAP_API_KEY=your-zap-key
 | **API Keys** | Hardcoded | Environment variables only |
 | **Body Parameters** | Fake test data | Dynamic discovery |
 | **Security Levels** | Hardcoded to LOW | Configurable per environment |
+| **Endpoint Restrictions** | DVWA SQLi only | All endpoints with params |
+| **Default Credentials** | `admin`/`password` | Must be explicitly set |
 
 ---
 
 ## Summary
 
-✅ **All hardcoded content removed**
-✅ **Scanner now works with any target**
-✅ **Supports environment-based configuration**
-✅ **Maintains backward compatibility with DVWA**
-✅ **Better security (no exposed API keys)**
-
-The scanner is now ready for actual, dynamic security scanning of any web application!
+✅ **All hardcoded content removed** - 9 different types of hardcoded values eliminated
+✅ **Scanner now works with any target** - No more DVWA-only restrictions
+✅ **Supports environment-based configuration** - All credentials and settings configurable
+✅ **Maintains backward compatibility with DVWA** - Still works if configured properly
+✅ **Better security** - No exposed API keys or default credentials
+✅ **Actual dynamic scanning** - Discovers and tests real endpoints

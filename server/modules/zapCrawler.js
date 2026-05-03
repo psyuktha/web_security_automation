@@ -330,13 +330,13 @@ export const extractEndpoints = async (targetUrl) => {
 const getFallbackEndpoints = (targetUrl) => {
   console.log("⚠️  Using fallback endpoint extraction");
 
-  // These mirror the actual routes in app.py
+  // Generic endpoints without hardcoded test data
   const routes = [
-    { path: "/login",           method: "POST", body: { username: "admin", password: "password" }, url: {} },
-    { path: "/users/search",    method: "GET",  body: {},                                           url: { q: "admin" } },
-    { path: "/products/1",      method: "GET",  body: {},                                           url: {} },
-    { path: "/orders/history",  method: "GET",  body: {},                                           url: { user_id: "1" } },
-    { path: "/admin/query",     method: "POST", body: { token: "faketoken", query: "SELECT * FROM products" }, url: {} },
+    { path: "/login",           method: "POST", body: { username: "", password: "" }, url: {} },
+    { path: "/users/search",    method: "GET",  body: {},                             url: { q: "" } },
+    { path: "/products/1",      method: "GET",  body: {},                             url: {} },
+    { path: "/orders/history",  method: "GET",  body: {},                             url: { user_id: "" } },
+    { path: "/admin/query",     method: "POST", body: { token: "", query: "" },       url: {} },
   ];
 
   const endpoints = routes.map((r) => {

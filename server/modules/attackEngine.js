@@ -924,12 +924,7 @@ export const performAttacks = async (client, endpoints, payloads) => {
       continue;
     }
 
-    // Requirement 5: Explicit DVWA Endpoint Restrictions
-    if (!endpoint.url.includes('/vulnerabilities/sqli/')) {
-       console.log(`⏭️  Skipping SQLi test on ${endpoint.url} — Restricted by constraints (!= /sqli/)`);
-       continue;
-    }
-
+    // Removed hardcoded DVWA restriction - now tests all endpoints with parameters
     console.log(`🎯 Attacking endpoint: ${endpoint.method} ${endpoint.url}`);
 
     const baseline = await getBaseline(client, endpoint);
