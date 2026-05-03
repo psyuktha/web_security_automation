@@ -26,10 +26,10 @@ Additional Hardening Steps: Enable protective headers and conduct regular code r
  * Generate a context-aware mitigation plan dynamically
  */
 export const generateMitigation = async (vuln) => {
-  const MITIGATION_API_KEY = process.env.MITIGATION_API_KEY || "AIzaSyCDZQStL9ax0iWUmE3-3Chv-_5M_Ycr9jA";
+  const MITIGATION_API_KEY = process.env.MITIGATION_API_KEY || process.env.GEMINI_API_KEY;
 
   if (!MITIGATION_API_KEY) {
-    console.warn("⚠️ MITIGATION_API_KEY not set. Using fallback mitigation.");
+    console.warn("⚠️ MITIGATION_API_KEY not set. Using fallback mitigation. Set MITIGATION_API_KEY or GEMINI_API_KEY environment variable.");
     return getFallbackMitigation(vuln.type);
   }
 

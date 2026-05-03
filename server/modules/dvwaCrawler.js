@@ -2,21 +2,43 @@ import * as cheerio from 'cheerio';
 import { URL } from 'url';
 
 /**
- * Extracts authenticated endpoints by spidering and parsing forms.
- * Currently hardcodes a few known DVWA vulnerability paths to guarantee discovery.
+ * Extracts authenticated endpoints by spidering the target and parsing forms.
+ * Uses dynamic crawling to discover actual endpoints on the target.
  */
 export const extractAuthenticatedEndpoints = async (client, targetUrl) => {
-  console.log("🔍 Starting authenticated crawl of DVWA...");
+  console.log("🔍 Starting authenticated crawl of target...");
   const endpoints = [];
   const seen = new Set();
   
-  // ZAP might crawl these by chance, but since we know it's DVWA, we can actively seek them.
-  const targetPaths = [
-    '/vulnerabilities/sqli/',
-    '/vulnerabilities/xss_r/',
-    '/vulnerabilities/xss_s/',
-    '/vulnerabilities/exec/' // command injection
-  ];
+  // Dynamically discover paths by crawling the target
+  const targetPaths = [];
+  const crawlResponse = await client.get(targetUrl, { timeout: 10000 }).catch(() => null);
+  
+  if (crawlResponse?.data) {
+    const $ = cheerio.load(crawlResponse.data);
+    // Extract all links from page
+    $('a[href]').each((i, link) => {
+      const href = $(link).attr('href');
+      if (href && !href.startsWith('javascript:') && !href.startsWith('#')) {
+        try {
+          const absoluteUrl = new URL(href, targetUrl).toString();
+          if (absoluteUrl.startsWith(targetUrl)) {
+            const path = new URL(absoluteUrl).pathname;
+            if (path && !targetPaths.includes(path)) {
+              targetPaths.push(path);
+            }
+          }
+        } catch (e) {
+          // Ignore invalid URLs
+        }
+      }
+    });
+  }
+  
+  // If no paths discovered, crawl root and common paths
+  if (targetPaths.length === 0) {
+    targetPaths.push('/');
+  }
 
   for (const path of targetPaths) {
     const fullUrl = new URL(path, targetUrl).toString();
@@ -46,13 +68,13 @@ export const extractAuthenticatedEndpoints = async (client, targetUrl) => {
           
           if (!name) return;
           if (type.toLowerCase() === 'submit') {
-            // Include submit button as some backend logic relies on it (e.g. name="Submit" value="Submit")
+            // Include submit button as some backend logic relies on it
             const val = $(input).attr('value') || 'Submit';
             if (method === 'GET') urlParams[name] = val;
             if (method === 'POST') bodyParams[name] = val;
             hasParams = true;
-          } else if (type.toLowerCase() === 'hidden' && name === 'user_token') {
-             // For CSRF tokens, we can keep it empty in the template. The attack phase handles fetching real ones.
+          } else if (type.toLowerCase() === 'hidden') {
+             // Include hidden fields (may include CSRF tokens with various names)
              if (method === 'GET') urlParams[name] = '';
              if (method === 'POST') bodyParams[name] = '';
              hasParams = true;

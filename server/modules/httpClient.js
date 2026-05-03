@@ -20,14 +20,26 @@ export const createSessionClient = () => {
 };
 
 /**
- * Convenience function to fetch a page and parse its DOM looking for a CSRF user_token
+ * Convenience function to fetch a page and parse its DOM looking for a CSRF token
+ * Tries common CSRF token field names
  */
 export const fetchCsrfToken = async (client, url) => {
   try {
     const response = await client.get(url, { timeout: 10000 });
     const $ = cheerio.load(response.data || '');
-    const token = $('input[name="user_token"]').first().val();
-    return token;
+    
+    // Try common CSRF token field names
+    const tokenFieldNames = ['user_token', 'csrf_token', 'token', '_token', 'csrf', 'authenticity_token', '_csrf'];
+    for (const fieldName of tokenFieldNames) {
+      const token = $(`input[name="${fieldName}"]`).first().val();
+      if (token) {
+        console.log(`✅ Found CSRF token field: ${fieldName}`);
+        return token;
+      }
+    }
+    
+    console.warn(`⚠️  No CSRF token found in common fields`);
+    return null;
   } catch (error) {
     console.error(`❌ Failed to fetch CSRF token from ${url}:`, error.message);
     return null;
@@ -35,15 +47,34 @@ export const fetchCsrfToken = async (client, url) => {
 };
 
 /**
- * Login flow specifically designed for DVWA targets.
- * Extracts the initial CSRF token, posts login credentials, and drops security to LOW.
+ * Attempts login to the target application if authentication is available.
+ * Looks for common login forms and extracts credentials from environment.
  */
 export const loginToDVWA = async (client, targetUrl) => {
   try {
-    console.log("🔐 Initiating DVWA Login Flow...");
+    console.log("🔐 Initiating authentication flow...");
     
     // 1. Fetch the login page to gather cookie and CSRF token
-    const loginUrl = new URL('/login.php', targetUrl).toString();
+    // Try common login paths
+    let loginUrl = null;
+    for (const loginPath of ['/login.php', '/login', '/auth/login', '/signin']) {
+      try {
+        const testUrl = new URL(loginPath, targetUrl).toString();
+        const response = await client.get(testUrl, { timeout: 5000 }).catch(() => null);
+        if (response?.status === 200) {
+          loginUrl = testUrl;
+          break;
+        }
+      } catch (e) {
+        // Try next path
+      }
+    }
+    
+    if (!loginUrl) {
+      console.warn("⚠️ Could not find login page");
+      return false;
+    }
+    
     const csrfToken = await fetchCsrfToken(client, loginUrl);
     
     if (!csrfToken) {
@@ -52,10 +83,13 @@ export const loginToDVWA = async (client, targetUrl) => {
       console.log(`🎫 Extracted CSRF Token: ${csrfToken}`);
     }
 
-    // 2. Perform Login POST
+    // 2. Perform Login POST with credentials from environment
     const params = new URLSearchParams();
-    params.append('username', 'admin');
-    params.append('password', 'password');
+    const username = process.env.TARGET_USERNAME || process.env.LOGIN_USERNAME || 'admin';
+    const password = process.env.TARGET_PASSWORD || process.env.LOGIN_PASSWORD || '';
+    
+    params.append('username', username);
+    params.append('password', password);
     params.append('Login', 'Login');
     if (csrfToken) {
       params.append('user_token', csrfToken);
@@ -68,26 +102,32 @@ export const loginToDVWA = async (client, targetUrl) => {
       }
     });
 
-    if (loginResponse.data?.includes("Welcome to Damn Vulnerable Web Application!") || loginResponse.status === 302) {
-      console.log("✅ Successfully logged into DVWA");
+    // Check for successful login (redirect or success indicators)
+    if (loginResponse.status === 302 || loginResponse.status === 200) {
+      console.log("✅ Successfully authenticated");
     } else {
       console.warn("⚠️ Login might have failed. Unexpected response.");
     }
 
-    // 3. Optional Bonus: Downgrade security level to LOW to ensure simpler vulnerabilities are exposed
+    // 3. Optional: Modify security/difficulty settings if available
     const securityUrl = new URL('/security.php', targetUrl).toString();
-    const securityCsrf = await fetchCsrfToken(client, securityUrl);
+    const securityResponse = await client.get(securityUrl, { timeout: 5000 }).catch(() => null);
     
-    if (securityCsrf) {
-      const secParams = new URLSearchParams();
-      secParams.append('security', 'low');
-      secParams.append('seclev_submit', 'Submit');
-      secParams.append('user_token', securityCsrf);
+    if (securityResponse?.status === 200) {
+      const securityCsrf = await fetchCsrfToken(client, securityUrl);
+      
+      if (securityCsrf) {
+        const secParams = new URLSearchParams();
+        const securityLevel = process.env.TARGET_SECURITY_LEVEL || 'low';
+        secParams.append('security', securityLevel);
+        secParams.append('seclev_submit', 'Submit');
+        secParams.append('user_token', securityCsrf);
 
-      await client.post(securityUrl, secParams.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Referer': securityUrl }
-      });
-      console.log("✅ Set DVWA security level to LOW");
+        await client.post(securityUrl, secParams.toString(), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Referer': securityUrl }
+        });
+        console.log(`✅ Set security level to ${securityLevel}`);
+      }
     }
     
     return true;

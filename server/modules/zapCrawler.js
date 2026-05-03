@@ -3,6 +3,10 @@ import axios from "axios";
 const ZAP_API_URL = process.env.ZAP_API_URL || "http://localhost:8090";
 const ZAP_API_KEY = process.env.ZAP_API_KEY || "";
 
+if (!ZAP_API_URL || ZAP_API_URL === "http://localhost:8090") {
+  console.log("⚠️  ZAP_API_URL not explicitly set. Using default: http://localhost:8090. Override with ZAP_API_URL environment variable.");
+}
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 const zapParams = (extra = {}) => {
   const p = { ...extra };
@@ -17,24 +21,21 @@ const isHtmlResponse = (data) => {
 
 /**
  * Infer body params from endpoint path when ZAP doesn't capture them
+ * Uses generic parameter names to avoid hardcoded test data
  */
 const inferBodyParams = (url) => {
   const path = new URL(url).pathname.toLowerCase();
+  const genericParams = { input: "", value: "", data: "", query: "", search: "" };
+  
+  // Return minimal generic params - actual payload injection happens during attack phase
   if (path.includes("login") || path.includes("auth") || path.includes("signin"))
-    return { username: "admin", password: "password" };
+    return { username: "", password: "" };
   if (path.includes("register") || path.includes("signup"))
-    return { username: "test", password: "password", email: "test@test.com" };
-  if (path.includes("admin"))
-    return { token: "test", query: "SELECT 1" };
-  if (path.includes("search"))
-    return { q: "test" };
-  if (path.includes("user"))
-    return { user_id: "1", username: "test" };
-  if (path.includes("product"))
-    return { id: "1" };
-  if (path.includes("order"))
-    return { order_id: "1", user_id: "1" };
-  return { id: "1", input: "test" };
+    return { username: "", password: "", email: "" };
+  if (path.includes("search") || path.includes("query"))
+    return { q: "", search: "" };
+  
+  return genericParams;
 };
 
 /**

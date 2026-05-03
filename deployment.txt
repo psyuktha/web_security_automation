@@ -1,0 +1,705 @@
+/Users/yuktha/Desktop/web_security_automation/backend/.venv/lib/python3.12/site-packages/google/adk/cli/adk_web_server.py:476: UserWarning: [EXPERIMENTAL] App: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  agentic_app = App(
+2025-10-30 11:51:05,962 - WARNING - runners.py:265 - App name mismatch detected. The runner is configured with app name "adk_agents", but the root agent was loaded from "/Users/yuktha/Desktop/web_security_automation/backend/.venv/lib/python3.12/site-packages/google/adk/agents", which implies app name "agents".
+2025-10-30 11:51:06,379 - INFO - google_llm.py:133 - Sending out request, model: gemini-2.0-flash-exp, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2025-10-30 11:51:06,380 - INFO - models.py:6772 - AFC is enabled with max remote calls: 10.
+2025-10-30 11:51:07,790 - INFO - google_llm.py:186 - Response received from the model.
+2025-10-30 11:51:08,078 - INFO - google_llm.py:133 - Sending out request, model: gemini-2.0-flash-exp, backend: GoogleLLMVariant.GEMINI_API, stream: False
+2025-10-30 11:51:08,079 - INFO - models.py:6772 - AFC is enabled with max remote calls: 10.
+2025-10-30 11:51:09,116 - INFO - google_llm.py:186 - Response received from the model.
+INFO:     127.0.0.1:49843 - "GET /apps/adk_agents/users/user/sessions/1117841c-29ee-4314-8256-b8a38060673e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49846 - "GET /debug/trace/session/1117841c-29ee-4314-8256-b8a38060673e HTTP/1.1" 200 OK
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+
++-----------------------------------------------------------------------------+
+| ADK Web Server shutting down...                                             |
++-----------------------------------------------------------------------------+
+
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4409]
+
+Aborted!
+make: *** [playground] Error 1
+
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % PROJECT_ID=$(noted-bliss-466812-s0)
+zsh: command not found: noted-bliss-466812-s0
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % PROJECT_ID=$("noted-bliss-466812-s0")
+zsh: command not found: noted-bliss-466812-s0
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % PROJECT_ID=$(gcloud config get-value project)
+LOCATION=us-central1
+
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % echo $PROJECT_ID
+echo $LOCATION
+
+noted-bliss-466812-s0
+us-central1
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % echo $PROJECT_ID
+echo $LOCATION
+
+noted-bliss-466812-s0
+us-central1
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl -X GET \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines"
+
+{}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/$(RESOURCE_ID):query \
+    -d '{"class_method": "async_create_session", "input": {"user_id": "u_123"},}'
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+zsh: command not found: RESOURCE_ID
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/projects//locations//reasoningEngines/:query</code> was not found on this server.  <ins>That’s all we know.</ins>
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % echo $PROJECT_ID
+echo $LOCATION
+
+noted-bliss-466812-s0
+us-central1
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl -X GET \   
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines"
+
+{}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/$(RESOURCE_ID):query \
+    -d '{"class_method": "async_create_session", "input": {"user_id": "u_123"},}'
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+zsh: command not found: RESOURCE_ID
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/projects//locations//reasoningEngines/:query</code> was not found on this server.  <ins>That’s all we know.</ins>
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % clear
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl -X GET \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://us-central1-aiplatform.googleapis.com/v1/projects/$(gcloud config get-value project)/locations/us-central1/reasoningEngines"
+
+{}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % gcloud config get-value ai/region
+
+(unset)
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % gcloud config set compute/region us-central1
+
+API [compute.googleapis.com] not enabled on project [noted-bliss-466812-s0]. Would 
+you like to enable and retry (this will take a few minutes)? (y/N)?  y
+
+Enabling service [compute.googleapis.com] on project [noted-bliss-466812-s0]...
+Operation "operations/acf.p2-464772725686-b7a922ea-3276-461d-bca2-1fae17c46ff0" finished successfully.
+Updated property [compute/region].
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl -X GET \  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://us-central1-aiplatform.googleapis.com/v1/projects/$(gcloud config get-value project)/locations/us-central1/reasoningEngines"
+
+{}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % gcloud config get-value ai/region
+
+(unset)
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % uvx agent-starter-pack enhance --adk -d agent_engine
+
+
+=== Google Cloud Agent Starter Pack 🚀===
+Enhancing your existing project with production-ready agent capabilities!
+
+Using current directory name as project name: backend
+
+🚀 Ready to enhance your project with deployment capabilities
+📂 /Users/yuktha/Desktop/web_security_automation/backend
+
+What will happen:
+• New template files will be added to this directory
+• Your existing files will be preserved
+• A backup will be created before any changes
+
+Continue with enhancement? [Y/n]: : n
+✋ Enhancement cancelled.
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % make deploy
+
+# Export dependencies to requirements file using uv export.
+(uv export --no-hashes --no-header --no-dev --no-emit-project --no-annotate > .requirements.txt 2>/dev/null || \
+        uv export --no-hashes --no-header --no-dev --no-emit-project > .requirements.txt) && \
+        uv run -m adk_agents.agent_engine_app
+warning: `VIRTUAL_ENV=/Users/yuktha/Desktop/web_security_automation/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+/Users/yuktha/Desktop/web_security_automation/backend/.venv/lib/python3.12/site-packages/google/cloud/aiplatform/models.py:52: FutureWarning: Support for google-cloud-storage < 3.0.0 will be removed in a future version of google-cloud-aiplatform. Please upgrade to google-cloud-storage >= 3.0.0.
+  from google.cloud.aiplatform.utils import gcs_utils
+INFO:root:Created bucket noted-bliss-466812-s0-agent-engine in US-CENTRAL1
+INFO:root:Bucket noted-bliss-466812-s0-agent-engine already exists
+
+    ╔═══════════════════════════════════════════════════════════╗
+    ║                                                           ║
+    ║   🤖 DEPLOYING AGENT TO VERTEX AI AGENT ENGINE 🤖         ║
+    ║                                                           ║
+    ╚═══════════════════════════════════════════════════════════╝
+    
+INFO:root:Agent config: {'agent': <__main__.AgentEngineApp object at 0x11e6cd3a0>, 'config': AgentEngineConfig(
+  description='',
+  display_name='backend',
+  env_vars={
+    'NUM_WORKERS': '1'
+  },
+  extra_packages=[
+    './adk_agents',
+  ],
+  gcs_dir_name='backend',
+  labels={},
+  requirements=[
+    'absolufy-imports==0.3.1',
+    'aiohappyeyeballs==2.6.1',
+    'aiohttp==3.13.2',
+    'aiosignal==1.4.0',
+    'alembic==1.17.1',
+    <... 140 more items ...>,
+  ],
+  staging_bucket='gs://noted-bliss-466812-s0-agent-engine'
+)}
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/noted-bliss-466812-s0/locations/us-central1/reasoningEngines "HTTP/1.1 200 OK"
+INFO:root:
+🚀 Creating new agent: backend
+INFO:vertexai_genai.agentengines:Identified the following requirements: {'cloudpickle': '3.1.1', 'google-cloud-aiplatform': '1.123.0', 'pydantic': '2.12.3'}
+INFO:vertexai_genai.agentengines:The final list of requirements: ['absolufy-imports==0.3.1', 'aiohappyeyeballs==2.6.1', 'aiohttp==3.13.2', 'aiosignal==1.4.0', 'alembic==1.17.1', 'annotated-doc==0.0.3', 'annotated-types==0.7.0', 'anyio==4.11.0', "async-timeout==5.0.1 ; python_full_version < '3.11'", 'attrs==25.4.0', 'authlib==1.6.5', 'cachetools==6.2.1', 'certifi==2025.10.5', "cffi==2.0.0 ; platform_python_implementation != 'PyPy'", 'charset-normalizer==3.4.4', 'click==8.3.0', 'cloudpickle==3.1.1', "colorama==0.4.6 ; sys_platform == 'win32'", 'cryptography==46.0.3', 'distro==1.9.0', 'docstring-parser==0.17.0', "exceptiongroup==1.3.0 ; python_full_version < '3.11'", 'fastapi==0.120.2', 'fastuuid==0.14.0', 'filelock==3.20.0', 'frozenlist==1.8.0', 'fsspec==2025.9.0', 'google-adk==1.17.0', 'google-api-core==2.28.1', 'google-api-python-client==2.185.0', 'google-auth==2.42.0', 'google-auth-httplib2==0.2.0', 'google-cloud-aiplatform==1.123.0', 'google-cloud-appengine-logging==1.7.0', 'google-cloud-audit-log==0.4.0', 'google-cloud-bigquery==3.38.0', 'google-cloud-bigtable==2.34.0', 'google-cloud-core==2.5.0', 'google-cloud-discoveryengine==0.13.12', 'google-cloud-logging==3.12.1', 'google-cloud-monitoring==2.28.0', 'google-cloud-resource-manager==1.15.0', 'google-cloud-secret-manager==2.25.0', 'google-cloud-spanner==3.59.0', 'google-cloud-speech==2.34.0', 'google-cloud-storage==2.19.0', 'google-cloud-trace==1.17.0', 'google-crc32c==1.7.1', 'google-genai==1.47.0', 'google-resumable-media==2.7.2', 'googleapis-common-protos==1.71.0', 'graphviz==0.21', "greenlet==3.2.4 ; platform_machine == 'AMD64' or platform_machine == 'WIN32' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'ppc64le' or platform_machine == 'win32' or platform_machine == 'x86_64'", 'grpc-google-iam-v1==0.14.3', 'grpc-interceptor==0.15.4', 'grpcio==1.76.0', 'grpcio-status==1.76.0', 'h11==0.16.0', "hf-xet==1.2.0 ; platform_machine == 'AMD64' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'", 'httpcore==1.0.9', 'httplib2==0.31.0', 'httpx==0.28.1', 'httpx-sse==0.4.3', 'huggingface-hub==1.0.1', 'idna==3.11', 'importlib-metadata==8.7.0', 'jinja2==3.1.6', 'jiter==0.11.1', 'joblib==1.5.2', 'jsonschema==4.25.1', 'jsonschema-specifications==2025.9.1', 'litellm==1.76.3', 'mako==1.3.10', 'markupsafe==3.0.3', 'mcp==1.19.0', 'multidict==6.7.0', "numpy==2.2.6 ; python_full_version < '3.11'", "numpy==2.3.4 ; python_full_version >= '3.11'", 'openai==2.6.1', 'opentelemetry-api==1.37.0', 'opentelemetry-exporter-gcp-logging==1.10.0a0', 'opentelemetry-exporter-gcp-monitoring==1.10.0a0', 'opentelemetry-exporter-gcp-trace==1.10.0', 'opentelemetry-exporter-otlp-proto-common==1.37.0', 'opentelemetry-exporter-otlp-proto-http==1.37.0', 'opentelemetry-proto==1.37.0', 'opentelemetry-resourcedetector-gcp==1.10.0a0', 'opentelemetry-sdk==1.37.0', 'opentelemetry-semantic-conventions==0.58b0', 'packaging==25.0', 'pandas==2.3.3', 'propcache==0.4.1', 'proto-plus==1.26.1', 'protobuf==6.33.0', 'pyasn1==0.6.1', 'pyasn1-modules==0.4.2', "pycparser==2.23 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'", 'pydantic==2.12.3', 'pydantic-core==2.41.4', 'pydantic-settings==2.11.0', 'pyparsing==3.2.5', 'python-dateutil==2.9.0.post0', 'python-dotenv==1.2.1', 'python-multipart==0.0.20', 'pytz==2025.2', "pywin32==311 ; sys_platform == 'win32'", 'pyyaml==6.0.3', 'referencing==0.37.0', 'regex==2025.10.23', 'requests==2.32.5', 'rpds-py==0.28.0', 'rsa==4.9.1', 'ruamel-yaml==0.18.16', "ruamel-yaml-clib==0.2.14 ; platform_python_implementation == 'CPython'", "scikit-learn==1.5.2 ; python_full_version < '3.11'", "scikit-learn==1.7.2 ; python_full_version >= '3.11'", "scipy==1.15.3 ; python_full_version < '3.11'", "scipy==1.16.3 ; python_full_version >= '3.11'", 'shapely==2.1.2', 'shellingham==1.5.4', 'six==1.17.0', 'sniffio==1.3.1', 'sqlalchemy==2.0.44', 'sqlalchemy-spanner==1.17.1', 'sqlparse==0.5.3', 'sse-starlette==3.0.2', 'starlette==0.49.1', 'tenacity==8.5.0', 'threadpoolctl==3.6.0', 'tiktoken==0.12.0', 'tokenizers==0.22.1', "tomli==2.3.0 ; python_full_version < '3.11'", 'tqdm==4.67.1', 'typer-slim==0.20.0', 'typing-extensions==4.15.0', 'typing-inspection==0.4.2', 'tzdata==2025.2', 'tzlocal==5.3.1', 'uritemplate==4.2.0', 'urllib3==2.5.0', 'uvicorn==0.38.0', 'watchdog==6.0.0', 'websockets==15.0.1', 'yarl==1.22.0', 'zipp==3.23.0']
+INFO:vertexai_genai.agentengines:Using bucket noted-bliss-466812-s0-agent-engine
+INFO:vertexai_genai.agentengines:Wrote to gs://noted-bliss-466812-s0-agent-engine/backend/agent_engine.pkl
+INFO:vertexai_genai.agentengines:Writing to gs://noted-bliss-466812-s0-agent-engine/backend/requirements.txt
+INFO:vertexai_genai.agentengines:Creating in-memory tarfile of extra_packages
+INFO:vertexai_genai.agentengines:Writing to gs://noted-bliss-466812-s0-agent-engine/backend/dependencies.tar.gz
+INFO:httpx:HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/noted-bliss-466812-s0/locations/us-central1/reasoningEngines "HTTP/1.1 200 OK"
+INFO:vertexai_genai.agentengines:View progress and logs at https://console.cloud.google.com/logs/query?project=noted-bliss-466812-s0.
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://us-central1-aiplatform.googleapis.com/v1beta1/projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384/operations/4287803651327524864 "HTTP/1.1 200 OK"
+INFO:vertexai_genai.agentengines:Agent Engine created. To use it in another session:
+INFO:vertexai_genai.agentengines:agent_engine=client.agent_engines.get(name='projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384')
+INFO:root:Agent Engine ID written to deployment_metadata.json
+
+✅ Deployment successful! Test your agent: notebooks/adk_app_testing.ipynb
+Service Account: service-464772725686@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+
+📊 View in console: https://console.cloud.google.com/vertex-ai/agents/locations/us-central1/agent-engines/5250480283932688384?project=noted-bliss-466812-s0
+
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl -X GET \  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://us-central1-aiplatform.googleapis.com/v1/projects/$(gcloud config get-value project)/locations/us-central1/reasoningEngines"
+
+{
+  "reasoningEngines": [
+    {
+      "name": "projects/464772725686/locations/us-central1/reasoningEngines/5250480283932688384",
+      "displayName": "backend",
+      "spec": {
+        "packageSpec": {
+          "pickleObjectGcsUri": "gs://noted-bliss-466812-s0-agent-engine/backend/agent_engine.pkl",
+          "dependencyFilesGcsUri": "gs://noted-bliss-466812-s0-agent-engine/backend/dependencies.tar.gz",
+          "requirementsGcsUri": "gs://noted-bliss-466812-s0-agent-engine/backend/requirements.txt",
+          "pythonVersion": "3.12"
+        },
+        "classMethods": [
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "session_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "",
+            "name": "get_session",
+            "description": "Deprecated. Use async_get_session instead.\n\n        Get a session for the given user.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "",
+            "name": "list_sessions",
+            "description": "Deprecated. Use async_list_sessions instead.\n\n        List sessions for the given user.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "state": {
+                  "nullable": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "",
+            "name": "create_session",
+            "description": "Deprecated. Use async_create_session instead.\n\n        Creates a new session.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "session_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "",
+            "name": "delete_session",
+            "description": "Deprecated. Use async_delete_session instead.\n\n        Deletes a session for the given user.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "feedback": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "feedback"
+              ],
+              "type": "object"
+            },
+            "api_mode": "",
+            "name": "register_feedback",
+            "description": "Collect and log feedback."
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "session_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_get_session",
+            "description": "Get a session for the given user.\n\n        Args:\n            user_id (str):\n                Required. The ID of the user.\n            session_id (str):\n                Required. The ID of the session.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                session service.\n\n        Returns:\n            Session: The session instance (if any). It returns None if the\n            session is not found.\n\n        Raises:\n            RuntimeError: If the session is not found.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_list_sessions",
+            "description": "List sessions for the given user.\n\n        Args:\n            user_id (str):\n                Required. The ID of the user.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                session service.\n\n        Returns:\n            ListSessionsResponse: The list of sessions.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "state": {
+                  "nullable": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_create_session",
+            "description": "Creates a new session.\n\n        Args:\n            user_id (str):\n                Required. The ID of the user.\n            session_id (str):\n                Optional. The ID of the session. If not provided, an ID\n                will be be generated for the session.\n            state (dict[str, Any]):\n                Optional. The initial state of the session.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                session service.\n\n        Returns:\n            Session: The newly created session instance.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "session_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_delete_session",
+            "description": "Deletes a session for the given user.\n\n        Args:\n            user_id (str):\n                Required. The ID of the user.\n            session_id (str):\n                Required. The ID of the session.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                session service.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "session": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "session"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_add_session_to_memory",
+            "description": "Generates memories.\n\n        Args:\n            session (Dict[str, Any]):\n                Required. The session to use for generating memories. It should\n                be a dictionary representing an ADK Session object, e.g.\n                session.model_dump(mode=\"json\").\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "query"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async",
+            "name": "async_search_memory",
+            "description": "Searches memories for the given user.\n\n        Args:\n            user_id: The id of the user.\n            query: The query to match the memories on.\n\n        Returns:\n            A SearchMemoryResponse containing the matching memories.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "message": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  ]
+                },
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "run_config": {
+                  "nullable": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "message",
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "stream",
+            "name": "stream_query",
+            "description": "Deprecated. Use async_stream_query instead.\n\n        Streams responses from the ADK application in response to a message.\n\n        Args:\n            message (Union[str, Dict[str, Any]]):\n                Required. The message to stream responses for.\n            user_id (str):\n                Required. The ID of the user.\n            session_id (str):\n                Optional. The ID of the session. If not provided, a new\n                session will be created for the user.\n            run_config (Optional[Dict[str, Any]]):\n                Optional. The run config to use for the query. If you want to\n                pass in a `run_config` pydantic object, you can pass in a dict\n                representing it as `run_config.model_dump(mode=\"json\")`.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                runner.\n\n        Yields:\n            The output of querying the ADK application.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "message": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  ]
+                },
+                "user_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "run_config": {
+                  "nullable": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "message",
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async_stream",
+            "name": "async_stream_query",
+            "description": "Streams responses asynchronously from the ADK application.\n\n        Args:\n            message (str):\n                Required. The message to stream responses for.\n            user_id (str):\n                Required. The ID of the user.\n            session_id (str):\n                Optional. The ID of the session. If not provided, a new\n                session will be created for the user.\n            run_config (Optional[Dict[str, Any]]):\n                Optional. The run config to use for the query. If you want to\n                pass in a `run_config` pydantic object, you can pass in a dict\n                representing it as `run_config.model_dump(mode=\"json\")`.\n            **kwargs (dict[str, Any]):\n                Optional. Additional keyword arguments to pass to the\n                runner.\n\n        Yields:\n            Event dictionaries asynchronously.\n        "
+          },
+          {
+            "parameters": {
+              "properties": {
+                "request_json": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "request_json"
+              ],
+              "type": "object"
+            },
+            "api_mode": "async_stream",
+            "name": "streaming_agent_run_with_events",
+            "description": "Streams responses asynchronously from the ADK application.\n\n        In general, you should use `async_stream_query` instead, as it has a\n        more structured API and works with the respective ADK services that\n        you have defined for the AdkApp. This method is primarily meant for\n        invocation from AgentSpace.\n\n        Args:\n            request_json (str):\n                Required. The request to stream responses for.\n        "
+          }
+        ],
+        "deploymentSpec": {
+          "env": [
+            {
+              "name": "NUM_WORKERS",
+              "value": "1"
+            }
+          ]
+        },
+        "agentFramework": "google-adk"
+      },
+      "createTime": "2025-10-30T06:37:42.037278Z",
+      "updateTime": "2025-10-30T06:44:13.363234Z"
+    }
+  ]
+}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \          
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/5250480283932688384:query \ 
+    -d '{"class_method": "async_create_session", "input": {"user_id": "u_123"},}'
+
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/projects//locations//reasoningEngines/5250480283932688384:query</code> was not found on this server.  <ins>That’s all we know.</ins>
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % 
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % $RESOURCE_ID=5250480283932688384
+zsh: 5250480283932688384 not found
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % RESOURCE_ID=5250480283932688384
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \       
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/$(RESOURCE_ID):query \
+    -d '{"class_method": "async_create_session", "input": {"user_id": "u_123"},}'
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+zsh: command not found: RESOURCE_ID
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/projects//locations//reasoningEngines/:query</code> was not found on this server.  <ins>That’s all we know.</ins>
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % echo $PROJECT_ID
+echo $LOCATION
+echo $RESOURCE_ID
+
+noted-bliss-466812-s0
+us-central1
+5250480283932688384
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  "https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines/${RESOURCE_ID}:query" \
+  -d '{
+        "class_method": "async_create_session",
+        "input": { "user_id": "u_123" }
+      }'
+
+{
+  "output": {
+    "id": "6124801210101792768",
+    "userId": "u_123",
+    "events": [],
+    "lastUpdateTime": 1761806977.533319,
+    "appName": "5250480283932688384",
+    "state": {}
+  }
+}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/$(RESOURCE_ID):streamQuery?alt=sse -d '{
+"class_method": "async_stream_query",
+"input": {
+    "user_id": "u_123",
+    "session_id": "6124801210101792768",
+    "message": "Hey whats the weather in new york today?",
+}
+}'
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+zsh: command not found: RESOURCE_ID
+zsh: no matches found: https://-aiplatform.googleapis.com/v1/projects//locations//reasoningEngines/:streamQuery?alt=sse
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % echo $PROJECT_ID
+echo $LOCATION                                                  
+echo $RESOURCE_ID                      
+  
+noted-bliss-466812-s0
+us-central1
+5250480283932688384
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \          
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://$(LOCATION)-aiplatform.googleapis.com/v1/projects/$(PROJECT_ID)/locations/$(LOCATION)/reasoningEngines/$(RESOURCE_ID):streamQuery?alt=sse -d '{
+"class_method": "async_stream_query",
+"input": {
+    "user_id": "u_123",
+    "session_id": "6124801210101792768",
+    "message": "Hey whats the weather in new york today?",
+}
+}'
+zsh: command not found: LOCATION
+zsh: command not found: PROJECT_ID
+zsh: command not found: LOCATION
+zsh: command not found: RESOURCE_ID
+zsh: no matches found: https://-aiplatform.googleapis.com/v1/projects//locations//reasoningEngines/:streamQuery?alt=sse
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines/${RESOURCE_ID}:streamQuery?alt=sse -d '{
+"class_method": "async_stream_query",
+"input": {
+    "user_id": "u_123",
+    "session_id": "6124801210101792768",
+    "message": "Hey whats the weather in new york today?",
+}
+}'
+zsh: no matches found: https://us-central1-aiplatform.googleapis.com/v1/projects/noted-bliss-466812-s0/locations/us-central1/reasoningEngines/5250480283932688384:streamQuery?alt=sse
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % curl \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  "https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/reasoningEngines/${RESOURCE_ID}:streamQuery?alt=sse" \
+  -d '{
+    "class_method": "async_stream_query",
+    "input": {
+      "user_id": "u_123",
+      "session_id": "6124801210101792768",
+      "message": "Hey whats the weather in new york today?"
+    }
+  }'
+
+{"content": {"parts": [{"text": "I am designed to generate penetration testing payloads for web application endpoints and do not have access to live weather information.\n"}], "role": "model"}, "finish_reason": "STOP", "usage_metadata": {"candidates_token_count": 23, "candidates_tokens_details": [{"modality": "TEXT", "token_count": 23}], "prompt_token_count": 470, "prompt_tokens_details": [{"modality": "TEXT", "token_count": 470}], "total_token_count": 493, "traffic_type": "ON_DEMAND"}, "avg_logprobs": -0.3706144664598548, "invocation_id": "e-943f490c-ecde-480a-9b1e-dc5ec8f4abb9", "author": "payload_agent", "actions": {"state_delta": {}, "artifact_delta": {}, "requested_auth_configs": {}, "requested_tool_confirmations": {}}, "id": "c378b10a-4264-466c-9798-9dc35cc57eb2", "timestamp": 1761807219.723439}
+{"content": {"parts": [{"text": "Okay, I understand. I will not provide weather information. I will await instructions on endpoints and payloads to generate `curl` commands for penetration testing.\n"}], "role": "model"}, "finish_reason": "STOP", "usage_metadata": {"candidates_token_count": 31, "candidates_tokens_details": [{"modality": "TEXT", "token_count": 31}], "prompt_token_count": 141, "prompt_tokens_details": [{"modality": "TEXT", "token_count": 141}], "total_token_count": 172, "traffic_type": "ON_DEMAND"}, "avg_logprobs": -0.24269876172465663, "invocation_id": "e-943f490c-ecde-480a-9b1e-dc5ec8f4abb9", "author": "attack_agent", "actions": {"state_delta": {}, "artifact_delta": {}, "requested_auth_configs": {}, "requested_tool_confirmations": {}}, "id": "03863455-d8ce-4bb2-a1fa-521aaf022b7e", "timestamp": 1761807220.336369}
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % 
+(web_security_automation) yuktha@Naveens-MacBook-Air backend % 
