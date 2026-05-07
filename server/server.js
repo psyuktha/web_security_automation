@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB, getDB } from "./db.js";
 import { hashPassword, comparePassword, generateToken, authenticateToken } from "./auth.js";
+import { createJiraIssuesForFindings } from "./services/jira_service.js";
 
 dotenv.config();
 
@@ -351,6 +352,19 @@ app.post("/api/scan/start", authenticateToken, async (req, res) => {
           });
 
           console.log(`✅ Scan completed and saved: ${scanId}`);
+
+          if (Array.isArray(result.vulnerabilities) && result.vulnerabilities.length > 0) {
+            try {
+              const jiraResult = await createJiraIssuesForFindings(
+                result.vulnerabilities,
+                targetUrl,
+                req.user.email || "Automated Scanner"
+              );
+              console.log(`📌 Jira ticket creation summary:`, jiraResult);
+            } catch (jiraError) {
+              console.error("❌ Jira ticket creation failed:", jiraError?.message || jiraError);
+            }
+          }
         } else {
           console.error(`❌ Scan failed: ${result.error}`);
         }
